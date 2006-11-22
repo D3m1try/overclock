@@ -2,24 +2,25 @@
 
 #freq table parser
 
-$bit0=1;
-$bit5=1;
-$bit6=0;
-$bit7=0;
+$bit0=0;
+$bit1=1;
+$bit3=1;
 while(<>)
 {
 	$sdram=0.0;
 	$pci=0.0;
 	$agp=0.0;
-	($bits, $tmp1, $fsb, $tmp2, $pci) = split(" ",$_);
+	($bit2, $bit7, $bit6, $bit5, $bit4, $fsb, $sdram, $pci, $agp) = split(" ",$_);
 
-	$bits =~ /(\d)(\d)(\d)(\d)/;
-	$bit4=$1;
-	$bit3=$2;
-	$bit2=$3;
-	$bit1=$4;
+
+	#$bits =~ /(\d)(\d)(\d)(\d)/;
+	#$bit2=$1;
+	#$bit7=$2;
+	#$bit6=$3;
+	#$bit5=$4;
+	#$bit4=$5;
 
 	$byte=$bit0+($bit1<<1)+($bit2<<2)+($bit3<<3)+($bit4<<4)+($bit5<<5)+($bit6<<6)+($bit7<<7);
-	printf("{%3.0f, 0x%.2X, %3.2f},\n", $fsb, $byte, $pci);
+	printf("\t{%3.0f, 0x%.2X, %3.2f, %3.2f, %3.2f},\n", $fsb, $byte, $pci, $sdram, $agp);
 }
 

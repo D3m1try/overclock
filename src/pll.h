@@ -90,6 +90,13 @@ int ics9248_153_CheckFSB(int fsb, float *sdram, float *pci, float *agp);
 int ics9248_153_GetFirstFSB();
 int ics9248_153_GetNextFSB();
 
+//ics9248-199
+int ics9248_199_SetFSB(int fsb);
+int ics9248_199_GetFSB();
+int ics9248_199_CheckFSB(int fsb, float *sdram, float *pci, float *agp);
+int ics9248_199_GetFirstFSB();
+int ics9248_199_GetNextFSB();
+
 //ics9250-08
 int ics9250_08_SetFSB(int fsb);
 int ics9250_08_GetFSB();
@@ -156,10 +163,10 @@ const PLL_t const PLL[] =
 	{"ics9248-114", UnTested, ics9248_114_SetFSB, ics9248_114_GetFSB, ics9248_114_CheckFSB, ics9248_114_GetFirstFSB, ics9248_114_GetNextFSB},
 	{"ics9248-141", UnTested, ics9248_141_SetFSB, ics9248_141_GetFSB, ics9248_141_CheckFSB, ics9248_141_GetFirstFSB, ics9248_141_GetNextFSB},
 	{"ics9248-153", UnTested, ics9248_153_SetFSB, ics9248_153_GetFSB, ics9248_153_CheckFSB, ics9248_153_GetFirstFSB, ics9248_153_GetNextFSB},
+	{"ics9248-199", UnTested, ics9248_199_SetFSB, ics9248_199_GetFSB, ics9248_199_CheckFSB, ics9248_199_GetFirstFSB, ics9248_199_GetNextFSB},
 	{"ics9250-08",  UnTested, ics9250_08_SetFSB, ics9250_08_GetFSB, ics9250_08_CheckFSB, ics9250_08_GetFirstFSB, ics9250_08_GetNextFSB},
 	{"ics94215",    UnTested, ics94215_SetFSB, ics94215_GetFSB, ics94215_CheckFSB, ics94215_GetFirstFSB, ics94215_GetNextFSB},
 	{"ics94228",    UnTested, ics94228_SetFSB, ics94228_GetFSB, ics94228_CheckFSB, ics94228_GetFirstFSB, ics94228_GetNextFSB},
-//{"nForce2",     UnTested, nForce2_SetFSB, nForce2_GetFSB, nForce2_CheckFSB, nForce2_GetFirstFSB, nForce2_GetNextFSB},
 	{"cy28331",      Testing, cy28331_SetFSB, cy28331_GetFSB, cy28331_CheckFSB, cy28331_GetFirstFSB, cy28331_GetNextFSB},
 	{""}
 };
