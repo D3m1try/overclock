@@ -23,7 +23,7 @@ typedef struct
 	float sdram;
 	float agp;
 } PLL_t;
-#define BYTECOUNT   18
+#define BYTECOUNT   1
 #define CONTROLBYTE 4
 #define CMD 0x00
 
@@ -31,18 +31,18 @@ static int FSBIndex = 0;
 
 static const PLL_t const pll[] =
 {
-//	{ 67, 0x0A, 33.33, 66.66, 66.66},
-	{ 67, 0x4A, 33.33, 100.00, 66.66},
+	{ 67, 0x0A, 33.33, 66.66, 66.66},
+//	{ 67, 0x4A, 33.33, 100.00, 66.66},
 	{ 90, 0x0E, 30.00, 90.00, 60.00},
-//	{100, 0x1A, 33.33, 100.00, 66.66},
+	{100, 0x1A, 33.33, 100.00, 66.66},
 //	{100, 0x5A, 33.33, 66.66, 66.66},
-	{100, 0x6A, 33.33, 133.33, 66.66},
+//	{100, 0x6A, 33.33, 133.33, 66.66},
 //	{100, 0xCA, 31.25, 166.66, 62.50},
-//	{101, 0x1E, 33.63, 100.90, 67.27},
-	{101, 0x6E, 33.48, 133.90, 66.95},
+	{101, 0x1E, 33.63, 100.90, 67.27},
+//	{101, 0x6E, 33.48, 133.90, 66.95},
 	{103, 0x2E, 34.33, 103.00, 68.67},
-//	{107, 0x8E, 35.66, 107.00, 71.33},
-	{107, 0x9E, 35.66, 142.66, 71.33},
+	{107, 0x8E, 35.66, 107.00, 71.33},
+//	{107, 0x9E, 35.66, 142.66, 71.33},
 	{110, 0xBE, 36.66, 110.00, 73.33},
 //	{110, 0xCE, 36.66, 146.66, 73.33},
 	{112, 0x8A, 33.60, 112.00, 67.20},
@@ -57,11 +57,11 @@ static const PLL_t const pll[] =
 	{138, 0xAA, 34.50, 138.00, 69.00},
 	{143, 0xAE, 35.66, 142.66, 71.33},
 	{147, 0xDE, 36.66, 146.66, 73.33},
-//	{150, 0xBA, 30.00, 150.00, 60.00},
-	{150, 0xEA, 30.00, 100.00, 60.00},
+	{150, 0xBA, 30.00, 150.00, 60.00},
+//	{150, 0xEA, 30.00, 100.00, 60.00},
 //	{160, 0xFA, 30.00, 120.00, 60.00},
-//	{167, 0x2A, 33.33, 166.66, 66.66},
-	{167, 0xEE, 31.25, 125.00, 66.68},
+	{167, 0x2A, 33.33, 166.66, 66.66},
+//	{167, 0xEE, 31.25, 125.00, 66.68},
 	{200, 0xFE, 33.33, 200.00, 66.66},
 	{0}
 };
@@ -69,28 +69,27 @@ static const PLL_t const pll[] =
 int ics9248_199_SetFSB(int fsb)
 {
 	int i, file, res;
-	unsigned char buf[BYTECOUNT];
+	int buf;
 
 	if(fsb < 0) return -1;
 
 	file = i2c_open();
 	if(file < 0) return -1;
-
-	res = i2c_smbus_read_block_data(file, CMD, buf);
+	res = i2c_smbus_read_word_data(file, CONTROLBYTE);
 	if(res < 0) return -1;
-
 	for(i=0; pll[i].fsb; i++)
 		if(pll[i].fsb == fsb)
-			buf[CONTROLBYTE] = pll[i].ctrlb;
-	if(!buf[CONTROLBYTE]) return -1;
+			buf = pll[i].ctrlb * 0x100 + (res & 0xFF);
+	if(!buf) return -1;
 
-	res = i2c_smbus_write_block_data(file, CMD, BYTECOUNT, buf);
+	res = i2c_smbus_write_word_data(file, CONTROLBYTE, buf);
 	i2c_close();
 
 	if(res < 0) return -1;
+
 #ifdef DEBUG
-	else printf("DEBUG: %i bytes written : ", BYTECOUNT);
-	for(i=0; i<BYTECOUNT; i++) printf("%02X ", buf[i]);
+	printf("DEBUG: %i word written : ", BYTECOUNT);
+	for(i=0; i<BYTECOUNT; i++) printf("%04X ", buf);
 	printf("\n");
 #endif /* DEBUG */
 
@@ -100,22 +99,24 @@ int ics9248_199_SetFSB(int fsb)
 int ics9248_199_GetFSB()
 {
 	int i, file, res;
-	unsigned char buf[BYTECOUNT];
+	unsigned char buf;
 
 	file = i2c_open();
 	if(file < 0) return -1;
-	res = i2c_smbus_read_block_data(file, CMD, buf);
+	res = i2c_smbus_read_word_data(file, CONTROLBYTE);
 	i2c_close();
 
 	if(res < 0) return -1;
+		else buf = res / 0x100;
+
 #ifdef DEBUG
-	else printf("DEBUG: %i bytes read : ", res);
-	for(i=0; i<res; i++) printf("%02X ", buf[i]);
+	printf("DEBUG: %i word read : ", BYTECOUNT);
+	for(i=0; i<BYTECOUNT; i++) printf("%04X ", res);
 	printf("\n");
 #endif /* DEBUG */
 
 	for(i=0; pll[i].fsb; i++)
-		if(pll[i].ctrlb == buf[CONTROLBYTE]) return pll[i].fsb;
+		if(pll[i].ctrlb == buf) return pll[i].fsb;
 
 	return -1;
 }
