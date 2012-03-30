@@ -17,8 +17,8 @@
 #include <strings.h>
 #include <getopt.h>
 
-#define VERSION "0.4.1a"
-#define DATE    "17-Nov-2005"
+#define VERSION "0.4.2"
+#define DATE    "30-Mar-2012"
 
 #include "pll.h"
 
@@ -101,7 +101,7 @@ static int SetPLL(const char *name)
 			GetNextFSB  = pll->GetNextFSB;
 			return 0;
 		}
-	
+
 	return -1;
 }
 

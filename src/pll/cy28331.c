@@ -22,8 +22,8 @@
 #define CMD 0x00
 
 static int FSBIndex = 0;
-const unsigned int FSB_Min = 100;
-const unsigned int FSB_Max = 300;
+static const unsigned int FSB_Min = 100;
+static const unsigned int FSB_Max = 300;
 
 int cy28331_SetFSB(int fsb)
 {
@@ -51,7 +51,7 @@ int cy28331_SetFSB(int fsb)
   		for(i=0; i<BYTECOUNT; i++) printf("%02X ", buf[i]); \
   		printf("\n"); \
 		} \
-	} while(0) 
+	} while(0)
 #else /* DEBUG */
 #define write_block \
 	do \
@@ -62,7 +62,7 @@ int cy28331_SetFSB(int fsb)
   	  i2c_close(); \
     	return -1; \
   	} \
-	} while(0) 
+	} while(0)
 #endif /* DEBUG */
 
 	file = i2c_open();
@@ -79,7 +79,7 @@ int cy28331_SetFSB(int fsb)
 #endif /* DEBUG */
 		i2c_close();
 		return -1;
-	}	
+	}
 #ifdef DEBUG
   else
 	{
@@ -93,14 +93,14 @@ int cy28331_SetFSB(int fsb)
 	buf[0] |= 0x01;
 	buf[0] &= 0x7F;
 	write_block;
-	
+
 #ifdef WATCHDOG
 	//Set WD(0:3) Bits = 0
 	buf[6] &= 0xF0;
 	write_block;
 
 	//Set Frequency Revert Bit
-	//Set WD(0:3) = 3 Sec 
+	//Set WD(0:3) = 3 Sec
 	buf[6] |= 0x23;
 	write_block;
 #endif /* WATCHDOG */
@@ -108,11 +108,11 @@ int cy28331_SetFSB(int fsb)
 	//calculcate P
 	fs = buf[0];
 	fs >>= 1;
-	fs &= 0x0F;	
+	fs &= 0x0F;
 	if(fs == 1 || fs == 5) p = 127.994667;
 	else if(fs == 4 || fs == 8 || fs == 9) p = 95.966;
 	else p = 191.992;
-	
+
 	//calculate M/N
 	mdn = p/(float)fsb;
 
@@ -121,7 +121,7 @@ int cy28331_SetFSB(int fsb)
 	M = 0;
 	min = 1.0;
 	for(n=21; n<126; n++)
-	{	
+	{
 		m=20;
 		if(m <= n/2)	m = n/2+1;
 		while(m<n && m<59)
@@ -148,7 +148,7 @@ int cy28331_SetFSB(int fsb)
 	buf[10] <<= 1;
 	buf[10] |= 1;
 
-	//Write N,M	
+	//Write N,M
 	write_block;
 	i2c_close();
 
@@ -168,7 +168,7 @@ int cy28331_GetFSB()
   unsigned int n, m;
 	float p;
 	unsigned char buf[32];
-	
+
 	file = i2c_open();
 	if(file < 0) return -1;
 	res = i2c_smbus_read_block_data(file, CMD, buf);

@@ -132,6 +132,13 @@ int cy28331_CheckFSB(int fsb, float *sdram, float *pci, float *agp);
 int cy28331_GetFirstFSB();
 int cy28331_GetNextFSB();
 
+//ics9lprs477dkl
+int ics9lprs477_SetFSB(int fsb);
+int ics9lprs477_GetFSB();
+int ics9lprs477_CheckFSB(int fsb, float *sdram, float *pci, float *agp);
+int ics9lprs477_GetFirstFSB();
+int ics9lprs477_GetNextFSB();
+
 //////////////
 typedef struct
 {
@@ -168,6 +175,7 @@ const PLL_t const PLL[] =
 	{"ics94215",    UnTested, ics94215_SetFSB, ics94215_GetFSB, ics94215_CheckFSB, ics94215_GetFirstFSB, ics94215_GetNextFSB},
 	{"ics94228",    UnTested, ics94228_SetFSB, ics94228_GetFSB, ics94228_CheckFSB, ics94228_GetFirstFSB, ics94228_GetNextFSB},
 	{"cy28331",      Testing, cy28331_SetFSB, cy28331_GetFSB, cy28331_CheckFSB, cy28331_GetFirstFSB, cy28331_GetNextFSB},
+	{"ics9lprs477dkl", Testing, ics9lprs477_SetFSB, ics9lprs477_GetFSB, ics9lprs477_CheckFSB, ics9lprs477_GetFirstFSB, ics9lprs477_GetNextFSB},
 	{""}
 };
 
