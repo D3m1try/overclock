@@ -36,7 +36,7 @@ int i2c_open()
 			if(!ioctl(file, I2C_SLAVE, 0x69))
 			{
 #ifdef DEBUG
-				printf("Using device '%s'\n", devname);
+				printf("DEBUG: Using device '%s'\n", devname);
 #endif /* DEBUG */
 				return file;
 			}

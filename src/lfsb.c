@@ -109,18 +109,19 @@ static void Supported()
 {
 	int i;
 
-	printf("\nSupported PLL:");
+	printf("\nSupported PLL:\n");
 	for(i=0; PLL[i].name[0]; i++)
 	{
-		if(i % 3 == 0) printf("\n");
 		printf("%s", PLL[i].name);
-		if(PLL[i].flags & UnTested) printf("(untested) ");
-		else if(PLL[i].flags & Tested) printf("(tested) ");
-		else if(PLL[i].flags & Testing) printf("(testing) ");
-		else printf(" ");
+		if(PLL[i].flags & UnTested)
+			printf("(untested)");
+		else if(PLL[i].flags & Tested)
+			printf("(tested)");
+		else if(PLL[i].flags & Testing)
+			printf("(testing)");
+		printf("\n");
 	}
-
-	printf("\n\n");
+	printf("\n");
 }
 
 void PrintCPUInfo()
@@ -132,13 +133,17 @@ void PrintFSBInfo(int fsb)
 {
 	float sdram, pci, agp;
 
-	if(!fsb) fsb = GetFSB();
+	if(!fsb)
+		fsb = GetFSB();
 	if(!CheckFSB(fsb, &sdram, &pci, &agp))
 	{
 		printf("FSB=%i MHz", fsb);
-		if(sdram > 0) printf(", SDRAM=%.2f MHz", sdram);
-		if(pci > 0) printf(", PCI=%.2f MHz", pci);
-		if(agp > 0) printf(", AGP=%.2f MHz", agp);
+		if(sdram > 0)
+			printf(", SDRAM=%.2f MHz", sdram);
+		if(pci > 0)
+			printf(", PCI=%.2f MHz", pci);
+		if(agp > 0)
+			printf(", AGP=%.2f MHz", agp);
 		printf("\n");
 	}
 }
@@ -155,7 +160,8 @@ void PrintSupportedFrequencies()
 	{
 		if(fsb - prev == 1)
 		{
-			if(!start) start = prev;
+			if(!start)
+				start = prev;
 		}
 		else
 		{
@@ -164,12 +170,14 @@ void PrintSupportedFrequencies()
 				printf("-%i", prev);
 				start = 0;
 			}
-			else printf(" %i", fsb);
+			else
+				printf(" %i", fsb);
 		}
 		prev = fsb;
 		fsb = GetNextFSB();
 	}
-	if(start) printf("-%i", prev);
+	if(start)
+		printf("-%i", prev);
 	printf("\n\n");
 }
 
@@ -201,25 +209,30 @@ int main(int argc, char *argv[])
 	}
 	while(optind < argc)
 	{
-		if(!pllname) pllname = argv[optind];
-		else fsbfreq = argv[optind];
+		if(!pllname)
+			pllname = argv[optind];
+		else
+			fsbfreq = argv[optind];
 		optind++;
 	}
 
 	printf("-------------------------------------------------------------\n");
 	PrintCPUInfo();
 
-	if(!pllname) return 0;
+	if(!pllname)
+		return 0;
 
 	if(SetPLL(pllname))
 	{
 		printf("PLL %s is not suppported.\n", pllname);
 		return 0;
 	}
-	else printf("PLL %s is supported.\n", pllname);
+	else
+		printf("PLL %s is supported.\n", pllname);
 
 	PrintFSBInfo(0);
-	if(freqs) PrintSupportedFrequencies();
+	if(freqs)
+		PrintSupportedFrequencies();
 
 	if(fsbfreq)
 	{
@@ -258,4 +271,3 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
-

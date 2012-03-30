@@ -10,7 +10,7 @@ sbindir = $(prefix)/sbin
 
 .PHONY: pll clean
 
-all: pll lfsb 
+all: pll lfsb
 
 pll:
 	$(MAKE) -C pll all
@@ -27,4 +27,3 @@ uninstall:
 clean:
 	rm -f *.o *~ lfsb tmp
 	$(MAKE) -C pll clean
-
