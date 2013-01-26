@@ -4,7 +4,7 @@
 * Description: FSB speed manipulating programm.
 *
 *
-* Author: Nikolay Kislitsa <deusexbeer@mail.ru>, (C) 2005
+* Author: Nikolay Kislitsa <deusexbeer@gmail.com>, (C) 2013
 *
 * Copyright: See COPYING file that comes with this distribution
 *
@@ -44,7 +44,7 @@ static void Version()
 {
 	printf("lfsb - FSB speed manipulating programm. Version "VERSION", "DATE"\n"
 	       "\n"
-	       "Copyright (C) 2005 by Nikolay Kislitsa <deusexbeer@mail.ru>\n"
+	       "Copyright (C) 2013 by Nikolay Kislitsa <deusexbeer@gmail.com>\n"
 	       "\n"
 	       "This program is free software; you can redistribute it and/or modify\n"
 	       "it under the terms set out in the LICENSE file, which is included\n"
