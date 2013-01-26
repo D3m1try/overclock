@@ -121,4 +121,3 @@ int ics9148_04_GetNextFSB()
 	if(pll[FSBIndex].fsb) return pll[FSBIndex].fsb;
 	else return -1;
 }
-

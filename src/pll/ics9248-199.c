@@ -69,7 +69,7 @@ static const PLL_t const pll[] =
 int ics9248_199_SetFSB(int fsb)
 {
 	int i, file, res;
-	int buf;
+	int buf=0;
 
 	if(fsb < 0) return -1;
 

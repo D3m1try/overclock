@@ -9,6 +9,8 @@
 * Copyright: See COPYING file that comes with this distribution
 *
 */
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -17,8 +19,8 @@
 #include <strings.h>
 #include <getopt.h>
 
-#define VERSION "0.4.2"
-#define DATE    "30-Mar-2012"
+#define VERSION "0.4.3d"
+#define DATE    "26-Jan-2013"
 
 #include "pll.h"
 
@@ -248,7 +250,7 @@ int main(int argc, char *argv[])
 
 		if(!yes)
 		{
-			printf("WARNING: Too high FSB/PCI/AGP speed can DAMAGE your hardware!\nContinue [y/n]: ");
+			printf("WARNING: Too high FSB/PCI/AGP speed can DAMAGE your hardware!\nContinue [y/N]: ");
 			yes = getc(stdin);
 			if(yes != 'y' && yes != 'Y')
 			{
