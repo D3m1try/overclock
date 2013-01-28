@@ -84,11 +84,11 @@ static int slg8sp513_unhide(const int file)
 	if(res != 25)
 	{
 		buf[12] = 0x19;
-		res = i2c_smbus_write_block_data(file, CMD, res, buf);
+		res = i2c_smbus_write_block_data(file, CMD, 13, buf);
 		if(res)
 			return -1;
 #ifdef DEBUG
-		printf("unhide DEBUG: %i bytes written : ", BYTECOUNT);
+		printf("unhide DEBUG: %i bytes written : ", 13);
 		for(i=0; i<BYTECOUNT; i++)
 			printf("%02X ", buf[i]);
 		printf("\n");
@@ -98,14 +98,14 @@ static int slg8sp513_unhide(const int file)
 		return 0;
 
 	res = i2c_smbus_read_block_data(file, CMD, buf);
+	if(res < 0)
+		return -1;
 #ifdef DEBUG
 	printf("unhide DEBUG: %i bytes read : ", res);
 	for(i=0; i<res; i++)
 		printf("%02X ", buf[i]);
 	printf("\n");
 #endif /* DEBUG */
-	if(res < 0)
-		return -1;
 
 	if(res == 0x19 && buf[12] == 0x19)
 		return 0;

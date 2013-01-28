@@ -18,9 +18,12 @@
 #include <inttypes.h>
 #include <strings.h>
 #include <getopt.h>
+#include <string.h>
 
-#define VERSION "0.4.3d"
-#define DATE    "26-Jan-2013"
+#define VERSION "0.4.3"
+#define DATE    "28-Jan-2013"
+
+#define CPUGOVERNOR
 
 #include "pll.h"
 
@@ -150,6 +153,43 @@ void PrintFSBInfo(int fsb)
 	}
 }
 
+#ifdef CPUGOVERNOR
+static char Governor[256];
+static void GetGovernor(char *gov, size_t govlen)
+{
+	FILE *file;
+	char *ch;
+
+	file = fopen("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", "rt");
+	if(!file)
+		return;
+	memset(gov, 0, govlen);
+	fread(gov, 1, govlen-1, file);
+	fclose(file);
+	if((ch = strrchr(gov, '\n')))
+		*ch = 0;
+}
+
+static void SetGovernor(const char *gov)
+{
+	char cmd[256];
+
+	if(!gov)
+		return;
+
+	snprintf(cmd, sizeof(cmd), "cpufreq-set -g %s", gov);
+	if(system(cmd))
+		printf("cpufreq-set failed\n");
+	else
+		printf("CPU governor '%s' set.\n", gov);
+}
+
+static void Exit()
+{
+	SetGovernor(Governor);
+}
+#endif
+
 void PrintSupportedFrequencies()
 {
 	int fsb, prev, start;
@@ -217,6 +257,12 @@ int main(int argc, char *argv[])
 			fsbfreq = argv[optind];
 		optind++;
 	}
+
+#ifdef CPUGOVERNOR
+	GetGovernor(Governor, sizeof(Governor));
+	SetGovernor("performance");
+	atexit(Exit);
+#endif
 
 	printf("-------------------------------------------------------------\n");
 	PrintCPUInfo();

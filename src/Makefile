@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -O2 -g0 -s -std=c99 -Wall -pedantic -finline -DDEBUG
+CFLAGS = -O2 -s -std=c99 -Wall -pedantic -finline -DDEBUG
 INSTALL=/usr/bin/install -c
 OBJS=i2c.o
 PLL=pll/*.o

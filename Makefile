@@ -4,9 +4,8 @@ all:
 clean:
 	$(MAKE) -C src clean
 
-install: 
+install:
 	$(MAKE) -C src install
 
-uninstall: 
+uninstall:
 	$(MAKE) -C src uninstall
-
