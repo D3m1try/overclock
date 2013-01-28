@@ -4,7 +4,7 @@
 // Description: PLL IC functions
 //
 //
-// Author: Nikolay Kislitsa <deusexbeer@mail.ru>, (C) 2005
+// Author: Nikolay Kislitsa <deusexbeer@gmail.com>, (C) 2013
 //
 // Copyright: See COPYING file that comes with this distribution
 //

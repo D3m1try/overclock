@@ -4,7 +4,7 @@
 * Description: i2c
 *
 *
-* Author: Nikolay Kislitsa <deusexbeer@mail.ru>, (C) 2005
+* Author: Nikolay Kislitsa <deusexbeer@gmail.com>, (C) 2013
 *
 * Copyright: See COPYING file that comes with this distribution
 *
@@ -58,4 +58,3 @@ int i2c_close()
 {
 	return close(file);
 }
-
