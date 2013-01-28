@@ -117,7 +117,7 @@ static void Supported()
 	printf("\nSupported PLL:\n");
 	for(i=0; PLL[i].name[0]; i++)
 	{
-		printf("%s", PLL[i].name);
+		printf("%s ", PLL[i].name);
 		if(PLL[i].flags & UnTested)
 			printf("(untested)");
 		else if(PLL[i].flags & Tested)
@@ -177,7 +177,7 @@ static void SetGovernor(const char *gov)
 	if(!gov)
 		return;
 
-	snprintf(cmd, sizeof(cmd), "cpufreq-set -g %s", gov);
+	snprintf(cmd, sizeof(cmd), "cpufreq-set -g %s &> /dev/null", gov);
 	if(system(cmd))
 		printf("cpufreq-set failed\n");
 	else

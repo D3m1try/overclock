@@ -182,8 +182,8 @@ const PLL_t const PLL[] =
 	{"ics94215",    UnTested, ics94215_SetFSB, ics94215_GetFSB, ics94215_CheckFSB, ics94215_GetFirstFSB, ics94215_GetNextFSB},
 	{"ics94228",    UnTested, ics94228_SetFSB, ics94228_GetFSB, ics94228_CheckFSB, ics94228_GetFirstFSB, ics94228_GetNextFSB},
 	{"cy28331",      Testing, cy28331_SetFSB, cy28331_GetFSB, cy28331_CheckFSB, cy28331_GetFirstFSB, cy28331_GetNextFSB},
-	{"ics9lprs477dkl", Testing, ics9lprs477_SetFSB, ics9lprs477_GetFSB, ics9lprs477_CheckFSB, ics9lprs477_GetFirstFSB, ics9lprs477_GetNextFSB},
-	{"slg8sp513", Testing, slg8sp513_SetFSB, slg8sp513_GetFSB, slg8sp513_CheckFSB, slg8sp513_GetFirstFSB, slg8sp513_GetNextFSB},
+	{"ics9lprs477dkl", Tested, ics9lprs477_SetFSB, ics9lprs477_GetFSB, ics9lprs477_CheckFSB, ics9lprs477_GetFirstFSB, ics9lprs477_GetNextFSB},
+	{"slg8sp513", Tested, slg8sp513_SetFSB, slg8sp513_GetFSB, slg8sp513_CheckFSB, slg8sp513_GetFirstFSB, slg8sp513_GetNextFSB},
 	{""}
 };
 
