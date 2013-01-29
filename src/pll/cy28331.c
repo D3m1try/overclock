@@ -27,7 +27,7 @@ static const unsigned int FSB_Max = 300;
 
 int cy28331_SetFSB(int fsb)
 {
-	int i, file, res;
+	int file, res;
 	unsigned char fs, N, M;
 	unsigned int n, m;
 	float p, mdn, min;
@@ -48,7 +48,7 @@ int cy28331_SetFSB(int fsb)
   	else \
 		{ \
 			printf("DEBUG: %i bytes written : ", BYTECOUNT); \
-  		for(i=0; i<BYTECOUNT; i++) printf("%02X ", buf[i]); \
+  		for(int i=0; i<BYTECOUNT; i++) printf("%02X ", buf[i]); \
   		printf("\n"); \
 		} \
 	} while(0)
@@ -74,7 +74,7 @@ int cy28331_SetFSB(int fsb)
 	{
 #ifdef DEBUG
 		printf("DEBUG: %i (should be %i) bytes read : ", res, BYTECOUNT);
-  	for(i=0; i<res; i++) printf("%02X ", buf[i]);
+  	for(int i=0; i<res; i++) printf("%02X ", buf[i]);
   	printf("\n");
 #endif /* DEBUG */
 		i2c_close();
@@ -84,7 +84,7 @@ int cy28331_SetFSB(int fsb)
   else
 	{
 		printf("DEBUG: %i bytes read : ", res);
-  	for(i=0; i<res; i++) printf("%02X ", buf[i]);
+  	for(int i=0; i<res; i++) printf("%02X ", buf[i]);
   	printf("\n");
 	}
 #endif /* DEBUG */
@@ -163,7 +163,7 @@ int cy28331_SetFSB(int fsb)
 
 int cy28331_GetFSB()
 {
-	int i, file, res;
+	int file, res;
   unsigned char fs;
   unsigned int n, m;
 	float p;
@@ -179,7 +179,7 @@ int cy28331_GetFSB()
 	else
 	{
 		printf("DEBUG: %i bytes read : ", res);
-		for(i=0; i<res; i++) printf("%02X ", buf[i]);
+		for(int i=0; i<res; i++) printf("%02X ", buf[i]);
 		printf("\n");
 	}
 #endif /* DEBUG */
@@ -222,4 +222,3 @@ int cy28331_GetNextFSB()
 	if(FSBIndex <= FSB_Max) return FSBIndex;
 	else return -1;
 }
-

@@ -1,5 +1,6 @@
 CC = gcc
-CFLAGS = -O2 -s -std=c99 -Wall -pedantic -finline -DDEBUG
+CFLAGS = -O2 -s -std=c99 -Wall -pedantic -finline
+CDFLAGS = -O2 -g -std=c99 -Wall -pedantic -finline -DDEBUG
 INSTALL=/usr/bin/install -c
 OBJS=i2c.o
 PLL=pll/*.o
@@ -8,15 +9,17 @@ LIBS=-lm
 prefix = /usr/local
 sbindir = $(prefix)/sbin
 
-.PHONY: pll clean
+.PHONY: clean debug
 
-all: pll lfsb
+all: lfsb
 
-pll:
+lfsb: $(OBJS) lfsb.c pll.h
 	$(MAKE) -C pll all
-
-lfsb: pll $(OBJS) lfsb.c pll.h
 	$(CC) $(CFLAGS) $(OBJS) $(PLL) $(LIBS) lfsb.c -o lfsb
+
+debug: $(OBJS) lfsb.c pll.h
+	$(MAKE) -C pll debug
+	$(CC) $(CDFLAGS) $(OBJS) $(PLL) $(LIBS) lfsb.c -o lfsb
 
 install: lfsb
 	su -c "$(INSTALL) lfsb $(sbindir)"

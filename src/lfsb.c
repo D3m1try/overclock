@@ -30,17 +30,17 @@
 static void Usage()
 {
 	printf("lfsb - FSB speed manipulating programm. Version "VERSION", "DATE"\n"
-			"\n"
-			"   Usage: lsfb [options] PLL [FSBFREQ]\n"
-			"\n"
-			"   -h --help         print this message\n"
-			"   -v --version      display software version & license\n"
-			"   -s --supported    print list of supported PLL\n"
-			"   -f --frequencies  print all supported freqs by PLL\n"
-			"   -y --yes          skip confirmation\n"
-			"\n"
-			"example: lfsb -yf ics9248-110 100\n"
-			"\n");
+	       "\n"
+	       "   Usage: lsfb [options] PLL [FSBFREQ]\n"
+	       "\n"
+	       "   -h --help         print this message\n"
+	       "   -v --version      display software version & license\n"
+	       "   -s --supported    print list of supported PLL\n"
+	       "   -f --frequencies  print all supported freqs by PLL\n"
+	       "   -y --yes          skip confirmation\n"
+	       "\n"
+	       "example: lfsb -yf ics9248-110 100\n"
+	       "\n");
 }
 
 static void Version()
@@ -86,6 +86,7 @@ static float GetCPUFreq()
 	return ((float)(tsc_end-tsc_start) / usec_delay);
 }
 
+static unsigned char PLLFlags;
 static int (*SetFSB)(int fsb);
 static int (*GetFSB)();
 static int (*CheckFSB)(int fsb, float *sdram, float *pci, float *agp);
@@ -99,6 +100,7 @@ static int SetPLL(const char *name)
 	for(pll=PLL; pll->name[0]; pll++)
 		if(!strcasecmp(name, pll->name))
 		{
+			PLLFlags    = pll->flags;
 			SetFSB      = pll->SetFSB;
 			GetFSB      = pll->GetFSB;
 			CheckFSB    = pll->CheckFSB;
@@ -110,24 +112,29 @@ static int SetPLL(const char *name)
 	return -1;
 }
 
+static const char *GetPLLFlags(const unsigned char flags)
+{
+	if(flags & Tested)
+		return "tested";
+	else if(flags & Testing)
+		return "testing";
+
+	return "untested";
+}
+
 static void Supported()
 {
 	int i;
 
-	printf("\nSupported PLL:\n");
+	printf("Supported PLL:\n");
 	for(i=0; PLL[i].name[0]; i++)
 	{
-		printf("%s ", PLL[i].name);
-		if(PLL[i].flags & UnTested)
-			printf("(untested)");
-		else if(PLL[i].flags & Tested)
-			printf("(tested)");
-		else if(PLL[i].flags & Testing)
-			printf("(testing)");
-		printf("\n");
+		printf("%s (%s)\n", PLL[i].name, GetPLLFlags(PLL[i].flags));
 	}
 	printf("\n");
 }
+
+
 
 void PrintCPUInfo()
 {
@@ -186,6 +193,7 @@ static void SetGovernor(const char *gov)
 
 static void Exit()
 {
+	printf("\n");
 	SetGovernor(Governor);
 }
 #endif
@@ -264,7 +272,7 @@ int main(int argc, char *argv[])
 	atexit(Exit);
 #endif
 
-	printf("-------------------------------------------------------------\n");
+	printf("\n");
 	PrintCPUInfo();
 
 	if(!pllname)
@@ -272,11 +280,11 @@ int main(int argc, char *argv[])
 
 	if(SetPLL(pllname))
 	{
-		printf("PLL %s is not suppported.\n", pllname);
+		printf("PLL %s is not suppported\n", pllname);
 		return 0;
 	}
 	else
-		printf("PLL %s is supported.\n", pllname);
+		printf("PLL %s is supported (%s)\n", pllname, GetPLLFlags(PLLFlags));
 
 	PrintFSBInfo(0);
 	if(freqs)
@@ -284,7 +292,7 @@ int main(int argc, char *argv[])
 
 	if(fsbfreq)
 	{
-		printf("-------------------------------------------------------------\n");
+		printf("\n");
 		fsb = atoi(fsbfreq);
 		if(CheckFSB(fsb, NULL, NULL, NULL))
 		{
@@ -310,12 +318,10 @@ int main(int argc, char *argv[])
 		else
 			printf("FSB frequency changed.\n");
 
-		printf("-------------------------------------------------------------\n");
-
+		printf("\n");
 		PrintCPUInfo();
 		PrintFSBInfo(fsb);
 	}
-	printf("-------------------------------------------------------------\n");
 
 	return 0;
 }

@@ -67,7 +67,7 @@ static const PLL_t const pll[] =
 
 static int slg8sp513_unhide(const int file)
 {
-	int i, res;
+	int res;
 	unsigned char buf[BYTECOUNT];
 
 	res = i2c_smbus_read_block_data(file, CMD, buf);
@@ -76,7 +76,7 @@ static int slg8sp513_unhide(const int file)
 #ifdef DEBUG
 	else
 		printf("unhide DEBUG: %i bytes read : ", res);
-	for(i=0; i<res; i++)
+	for(int i=0; i<res; i++)
 		printf("%02X ", buf[i]);
 	printf("\n");
 #endif /* DEBUG */
@@ -89,7 +89,7 @@ static int slg8sp513_unhide(const int file)
 			return -1;
 #ifdef DEBUG
 		printf("unhide DEBUG: %i bytes written : ", 13);
-		for(i=0; i<BYTECOUNT; i++)
+		for(int i=0; i<BYTECOUNT; i++)
 			printf("%02X ", buf[i]);
 		printf("\n");
 #endif /* DEBUG */
@@ -102,7 +102,7 @@ static int slg8sp513_unhide(const int file)
 		return -1;
 #ifdef DEBUG
 	printf("unhide DEBUG: %i bytes read : ", res);
-	for(i=0; i<res; i++)
+	for(int i=0; i<res; i++)
 		printf("%02X ", buf[i]);
 	printf("\n");
 #endif /* DEBUG */

@@ -40,7 +40,7 @@ int ics9lprs477_CheckFSB(int fsb, float *sdram, float *pci, float *agp)
 
 int ics9lprs477_SetFSB(int fsb)
 {
-	int i, file, res;
+	int file, res;
 	unsigned int n, m;
 	unsigned char buf[32];
 
@@ -56,7 +56,7 @@ int ics9lprs477_SetFSB(int fsb)
 	{
 #ifdef DEBUG
 		printf("DEBUG: %i (should be %i) bytes read : ", res, BYTECOUNT);
-		for(i=0; i<res; i++)
+		for(int i=0; i<res; i++)
 			printf("%02X ", buf[i]);
 		printf("\n");
 #endif /* DEBUG */
@@ -67,7 +67,7 @@ int ics9lprs477_SetFSB(int fsb)
 	else
 	{
 		printf("DEBUG: %i bytes read : ", res);
-		for(i=0; i<res; i++)
+		for(int i=0; i<res; i++)
 			printf("%02X ", buf[i]);
 		printf("\n");
 	}
@@ -99,7 +99,7 @@ int ics9lprs477_SetFSB(int fsb)
 #ifdef DEBUG
   else
 		printf("DEBUG: %i bytes written : ", BYTECOUNT);
-  for(i=0; i<BYTECOUNT; i++)
+  for(int i=0; i<BYTECOUNT; i++)
 		printf("%02X ", buf[i]);
   printf("\n");
 #endif /* DEBUG */
@@ -109,7 +109,7 @@ int ics9lprs477_SetFSB(int fsb)
 
 int ics9lprs477_GetFSB()
 {
-	int i, file, res;
+	int file, res;
 	unsigned int n, m;
 	unsigned char buf[32];
 
@@ -124,7 +124,7 @@ int ics9lprs477_GetFSB()
 	else
 	{
 		printf("DEBUG: %i bytes read : ", res);
-		for(i=0; i<res; i++)
+		for(int i=0; i<res; i++)
 			printf("%02X ", buf[i]);
 		printf("\n");
 	}
