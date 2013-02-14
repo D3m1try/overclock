@@ -29,7 +29,7 @@
 
 static void Usage()
 {
-	printf("lfsb - FSB speed manipulating programm. Version "VERSION", "DATE"\n"
+	printf("lfsb - linux FSB overclocking tool. Version "VERSION", "DATE"\n"
 	       "\n"
 	       "   Usage: lsfb [options] PLL [FSBFREQ]\n"
 	       "\n"
@@ -39,13 +39,13 @@ static void Usage()
 	       "   -f --frequencies  print all supported freqs by PLL\n"
 	       "   -y --yes          skip confirmation\n"
 	       "\n"
-	       "example: lfsb -yf ics9248-110 100\n"
-	       "\n");
+	       "example: lfsb -yf ics9248-110 100\n");
+	exit(0);
 }
 
 static void Version()
 {
-	printf("lfsb - FSB speed manipulating programm. Version "VERSION", "DATE"\n"
+	printf("lfsb - linux FSB overclocking tool. Version "VERSION", "DATE"\n"
 	       "\n"
 	       "Copyright (C) 2013 by Nikolay Kislitsa <deusexbeer@gmail.com>\n"
 	       "\n"
@@ -56,8 +56,8 @@ static void Version()
 	       "This program is distributed in the hope that it will be useful,\n"
 	       "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
 	       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-	       "LICENSE file for more details.\n"
-	       "\n");
+	       "LICENSE file for more details.\n");
+	exit(0);
 }
 
 static inline int64_t rdtsc(void)
@@ -133,8 +133,6 @@ static void Supported()
 	}
 	printf("\n");
 }
-
-
 
 void PrintCPUInfo()
 {
