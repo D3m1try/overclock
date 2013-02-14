@@ -7,7 +7,7 @@ PLL=pll/*.o
 LIBS=-lm
 
 prefix = /usr/local
-sbindir = $(prefix)/sbin
+sbindir = $(prefix)/bin
 
 .PHONY: clean debug
 

@@ -151,7 +151,7 @@ void PrintFSBInfo(int fsb)
 	{
 		printf("FSB=%i MHz", fsb);
 		if(sdram > 0)
-			printf(", SDRAM=%.2f MHz", sdram);
+			printf(", RAM=%.2f MHz", sdram);
 		if(pci > 0)
 			printf(", PCI=%.2f MHz", pci);
 		if(agp > 0)
