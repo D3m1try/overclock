@@ -228,7 +228,7 @@ void PrintSupportedFrequencies()
 	}
 	if(start)
 		printf("-%i", prev);
-	printf("\n\n");
+	printf("\n");
 }
 
 int main(int argc, char *argv[])
