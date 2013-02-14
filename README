@@ -1,9 +1,9 @@
 This program changes PLL registers over i2c/SMbus, and FSB clock speed changes
-too. :)
+too.
 
 If your PLL is not supported you can do following:
 
-1. Download datasheet, read it, add write support by yourself.
+1. Download datasheet, read it, write support by yourself.
    Test it. Send code and results to me.
    That is the easy way. :)
 
