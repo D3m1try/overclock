@@ -20,8 +20,8 @@
 #include <getopt.h>
 #include <string.h>
 
-#define VERSION "0.4.3"
-#define DATE    "28-Jan-2013"
+#define VERSION "0.4.4a"
+#define DATE    "15-Feb-2013"
 
 #define CPUGOVERNOR
 
@@ -112,11 +112,11 @@ static int SetPLL(const char *name)
 	return -1;
 }
 
-static const char *GetPLLFlags(const unsigned char flags)
+static const char *GetPLLFlags(const Test_t t)
 {
-	if(flags & Tested)
+	if(t == Tested)
 		return "tested";
-	else if(flags & Testing)
+	else if(t == Testing)
 		return "testing";
 
 	return "untested";
