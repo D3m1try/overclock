@@ -19,11 +19,13 @@
 #include <strings.h>
 #include <getopt.h>
 #include <string.h>
+#include <syslog.h>
 
 #define VERSION "0.4.4a"
 #define DATE    "15-Feb-2013"
 
 #define CPUGOVERNOR
+#define SYSLOGREPORT
 
 #include "pll.h"
 
@@ -134,17 +136,15 @@ static void Supported()
 	printf("\n");
 }
 
-void PrintCPUInfo()
+void PrintCPUInfo(const float cpuf)
 {
-	printf("CPU frequency : %.2f MHz (estimated)\n", GetCPUFreq());
+	printf("CPU frequency : %.2f MHz (estimated)\n", cpuf);
 }
 
 void PrintFSBInfo(int fsb)
 {
 	float sdram, pci, agp;
 
-	if(!fsb)
-		fsb = GetFSB();
 	if(!CheckFSB(fsb, &sdram, &pci, &agp))
 	{
 		printf("FSB=%i MHz", fsb);
@@ -232,8 +232,9 @@ void PrintSupportedFrequencies()
 
 int main(int argc, char *argv[])
 {
-	int c, fsb, freqs=0, yes=0;
+	int c, fsb, freqs=0, yes=0, fsbf;
 	char *pllname=NULL, *fsbfreq=NULL;
+	float cpuf;
 	struct option long_options[] =
 	{
 		{"help", 0, 0, 'h'},
@@ -272,7 +273,7 @@ int main(int argc, char *argv[])
 #endif
 
 	printf("\n");
-	PrintCPUInfo();
+	PrintCPUInfo(GetCPUFreq());
 
 	if(!pllname)
 		return 0;
@@ -285,7 +286,8 @@ int main(int argc, char *argv[])
 	else
 		printf("PLL %s is supported (%s)\n", pllname, GetPLLFlags(PLLFlags));
 
-	PrintFSBInfo(0);
+	fsbf = GetFSB();
+	PrintFSBInfo(fsbf);
 	if(freqs)
 		PrintSupportedFrequencies();
 
@@ -300,6 +302,10 @@ int main(int argc, char *argv[])
 		}
 		printf("Changing to:\n");
 		PrintFSBInfo(fsb);
+#ifdef SYSLOGREPORT
+		syslog(LOG_INFO, "Changing FSB frequency from %i to %i MHz", fsbf, fsb);
+		sync();
+#endif
 
 		if(!yes)
 		{
@@ -312,15 +318,24 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		if(SetFSB(fsb))
+		c = SetFSB(fsb);
+		cpuf = GetCPUFreq();
+
+		if(c)
 			perror("Can't change frequency, SetFSB error");
 		else
+		{
 			printf("FSB frequency changed.\n");
+#ifdef SYSLOGREPORT
+			syslog(LOG_INFO, "Success: FSB %i MHz, CPU %.2f MHz", fsb, cpuf);
+#endif
+		}
 
 		printf("\n");
-		PrintCPUInfo();
+		PrintCPUInfo(cpuf);
 		PrintFSBInfo(fsb);
 	}
 
 	return 0;
 }
+

@@ -130,7 +130,7 @@ int ics9lprs477_GetFSB()
 	}
 #endif /* DEBUG */
 
-	n = (buf[17] << 3) | (buf[16] & 0xC0) >> 5;
+	n = (buf[17] << 3) | ((buf[16] & 0xC0) >> 5);
 	m = buf[16] & 0x3F;
 
 	return (int)(25.0f*(float)n/(float)m);
