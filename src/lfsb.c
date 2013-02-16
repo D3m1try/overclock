@@ -86,7 +86,7 @@ static float GetCPUFreq()
 	return ((float)(tsc_end-tsc_start) / usec_delay);
 }
 
-static unsigned char PLLFlags;
+static Test_t PLLFlags;
 static int (*SetFSB)(int fsb);
 static int (*GetFSB)();
 static int (*CheckFSB)(int fsb, float *sdram, float *pci, float *agp);
@@ -193,6 +193,7 @@ static void Exit()
 {
 	printf("\n");
 	SetGovernor(Governor);
+	usleep(300000);
 }
 #endif
 
