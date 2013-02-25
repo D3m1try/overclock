@@ -20,6 +20,8 @@
 #include <getopt.h>
 #include <string.h>
 #include <syslog.h>
+#include <time.h>
+#include <sched.h>
 
 #define VERSION "0.4.4a"
 #define DATE    "15-Feb-2013"
@@ -71,23 +73,35 @@ static inline int64_t rdtsc(void)
 	return ((int64_t)j<<32) + (int64_t)i;
 }
 
-static float GetCPUFreq()
+static void SetAffinity(const int cpunum)
+{
+	cpu_set_t cpuset;
+
+	CPU_ZERO(&cpuset);
+	CPU_SET(cpunum, &cpuset);
+	if(sched_setaffinity(0, sizeof(cpuset), &cpuset))
+		printf("SetAffinity failed\n");
+}
+
+static double GetCPUFreq()
 {
 	int64_t tsc_start, tsc_end;
-	struct timeval tv_start, tv_end;
-	int usec_delay;
+	struct timespec ts_start, ts_end;
+	int nsec_delay;
+
+	SetAffinity(0);
 
 	tsc_start = rdtsc();
-	gettimeofday(&tv_start, NULL);
+	clock_gettime(CLOCK_MONOTONIC, &ts_start);
 
 	usleep(300000);
 
 	tsc_end = rdtsc();
-	gettimeofday(&tv_end, NULL);
+	clock_gettime(CLOCK_MONOTONIC, &ts_end);
 
-	usec_delay = 1000000 * (tv_end.tv_sec - tv_start.tv_sec) + (tv_end.tv_usec - tv_start.tv_usec);
+	nsec_delay = 1000000000 * (ts_end.tv_sec - ts_start.tv_sec) + (ts_end.tv_nsec - ts_start.tv_nsec);
 
-	return ((float)(tsc_end-tsc_start) / usec_delay);
+	return ((double)(tsc_end-tsc_start)*1000.0 / (double)nsec_delay);
 }
 
 static int SetPLL(const char *name)
@@ -172,7 +186,7 @@ static void SetGovernor(const char *gov)
 	if(!gov)
 		return;
 
-	snprintf(cmd, sizeof(cmd), "cpufreq-set -g %s &> /dev/null", gov);
+	snprintf(cmd, sizeof(cmd), "cpufreq-set -r -g %s &> /dev/null", gov);
 	if(system(cmd))
 		printf("cpufreq-set failed\n");
 	else
@@ -279,9 +293,9 @@ int main(int argc, char *argv[])
 	{
 		tme = CurPLL->CheckTME();
 		if(tme == 1)
-			printf("Trusted Mode Enabled, PLL is TME locked.\nOverclocking is not possible.\n");
+			printf("\nTrusted Mode Enabled, PLL is TME locked.\nOverclocking is not possible.\n");
 		else if(!tme)
-			printf("Trusted Mode Disabled.\nOverclocking is possible.\n");
+			printf("\nTrusted Mode Disabled.\nOverclocking is possible.\n");
 	}
 
 	fsbf = CurPLL->GetFSB();

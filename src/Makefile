@@ -15,7 +15,7 @@ all: lfsb
 
 lfsb: $(OBJS) lfsb.c pll.h
 	$(MAKE) -C pll all
-	$(CC) $(CFLAGS) $(OBJS) $(PLL) $(LIBS) lfsb.c -o lfsb
+	$(CC) $(CFLAGS) $(OBJS) $(PLL) $(LIBS) lfsb.c -o lfsb -lrt
 
 debug: $(OBJS) lfsb.c pll.h
 	$(MAKE) -C pll debug

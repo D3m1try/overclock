@@ -85,7 +85,7 @@ int ics9lprs365_GetFSB()
 	i2c_close();
 
 	if(res < 0) return -1;
-	#ifdef DEBUG
+#ifdef DEBUG
 	else
 	{
 		printf("DEBUG: %i bytes read : ", res);
@@ -93,7 +93,7 @@ int ics9lprs365_GetFSB()
 			printf("%02X ", buf[i]);
 		printf("\n");
 	}
-	#endif /* DEBUG */
+#endif /* DEBUG */
 
 	n = buf[14]| ((buf[13] & 0x80) << 1) | ((buf[13] & 0x40) << 3);
 	m = buf[13] & 0x3F;
