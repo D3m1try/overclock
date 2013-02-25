@@ -41,5 +41,6 @@ Check /sys/devices/system/clocksource/clocksource0/available_clocksource for
 available clocksources.
 
 If you can't see i2c bus of your MoBo check boot messages for ACPI resource
-conflicts. Boot parameter acpi_enforce_resources=lax can help in this case.
-Sometimes "clocksource=acpi_pm" can help unhide smbus.
+conflicts. Boot parameter "acpi_enforce_resources=lax" can help in this case.
+Parameter "clocksource=acpi_pm" can help unhide PLLs 0x69 smbus address.
+
