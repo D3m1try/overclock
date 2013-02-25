@@ -1,10 +1,10 @@
 /*
- *  C Implementation: ics9lprs477
+ *  C Implementation: ics9lprs365
  *
- * Description: ics9lprs477
+ * Description: ics9lprs365
  *
  *
- * Author: Nikolay Kislitsa <deusexbeer@mail.ru>, (C) 2005
+ * Author: Nikolay Kislitsa <deusexbeer@gmail.com>, (C) 2013
  *
  * Copyright: See COPYING file that comes with this distribution
  *
@@ -74,7 +74,31 @@ int ics9lprs365_SetFSB(int fsb)
 
 int ics9lprs365_GetFSB()
 {
-	return -1;
+	int file, res;
+	unsigned int n, m;
+	unsigned char buf[32];
+
+	file = i2c_open();
+	if(file < 0)
+		return -1;
+	res = i2c_smbus_read_block_data(file, CMD, buf);
+	i2c_close();
+
+	if(res < 0) return -1;
+	#ifdef DEBUG
+	else
+	{
+		printf("DEBUG: %i bytes read : ", res);
+		for(int i=0; i<res; i++)
+			printf("%02X ", buf[i]);
+		printf("\n");
+	}
+	#endif /* DEBUG */
+
+	n = buf[14]| ((buf[13] & 0x80) << 1) | ((buf[13] & 0x40) << 3);
+	m = buf[13] & 0x3F;
+
+	return (int)(25.0f*(float)n/(float)m);
 }
 
 int ics9lprs365_CheckFSB(int fsb, float *ram, float *pci, float *agp)
