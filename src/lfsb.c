@@ -29,6 +29,8 @@
 
 #include "pll.h"
 
+static const PLL_t *CurPLL = NULL;
+
 static void Usage()
 {
 	printf("lfsb - linux FSB overclocking tool. Version "VERSION", "DATE"\n"
@@ -88,13 +90,6 @@ static float GetCPUFreq()
 	return ((float)(tsc_end-tsc_start) / usec_delay);
 }
 
-static Test_t PLLFlags;
-static int (*SetFSB)(int fsb);
-static int (*GetFSB)();
-static int (*CheckFSB)(int fsb, float *sdram, float *pci, float *agp);
-static int (*GetFirstFSB)();
-static int (*GetNextFSB)();
-
 static int SetPLL(const char *name)
 {
 	const PLL_t *pll;
@@ -102,12 +97,7 @@ static int SetPLL(const char *name)
 	for(pll=PLL; pll->name[0]; pll++)
 		if(!strcasecmp(name, pll->name))
 		{
-			PLLFlags    = pll->flags;
-			SetFSB      = pll->SetFSB;
-			GetFSB      = pll->GetFSB;
-			CheckFSB    = pll->CheckFSB;
-			GetFirstFSB = pll->GetFirstFSB;
-			GetNextFSB  = pll->GetNextFSB;
+			CurPLL = pll;
 			return 0;
 		}
 
@@ -143,13 +133,13 @@ void PrintCPUInfo(const float cpuf)
 
 void PrintFSBInfo(int fsb)
 {
-	float sdram, pci, agp;
+	float ram, pci, agp;
 
-	if(!CheckFSB(fsb, &sdram, &pci, &agp))
+	if(!CurPLL->CheckFSB(fsb, &ram, &pci, &agp))
 	{
 		printf("FSB=%i MHz", fsb);
-		if(sdram > 0)
-			printf(", RAM=%.2f MHz", sdram);
+		if(ram > 0)
+			printf(", RAM=%.2f MHz", ram);
 		if(pci > 0)
 			printf(", PCI=%.2f MHz", pci);
 		if(agp > 0)
@@ -202,7 +192,7 @@ void PrintSupportedFrequencies()
 	int fsb, prev, start;
 
 	printf("\nSupported FSB frequencies (MHz):\n");
-	fsb = GetFirstFSB();
+	fsb = CurPLL->GetFirstFSB();
 	start = 0;
 	prev = 0;
 	while(fsb > 0)
@@ -223,7 +213,7 @@ void PrintSupportedFrequencies()
 				printf(" %i", fsb);
 		}
 		prev = fsb;
-		fsb = GetNextFSB();
+		fsb = CurPLL->GetNextFSB();
 	}
 	if(start)
 		printf("-%i", prev);
@@ -232,7 +222,7 @@ void PrintSupportedFrequencies()
 
 int main(int argc, char *argv[])
 {
-	int c, fsb, freqs=0, yes=0, fsbf;
+	int c, fsb, freqs=0, yes=0, fsbf, tme;
 	char *pllname=NULL, *fsbfreq=NULL;
 	float cpuf;
 	struct option long_options[] =
@@ -284,9 +274,17 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 	else
-		printf("PLL %s is supported (%s)\n", pllname, GetPLLFlags(PLLFlags));
+		printf("PLL %s is supported (%s)\n", pllname, GetPLLFlags(CurPLL->flags));
+	if(CurPLL->CheckTME)
+	{
+		tme = CurPLL->CheckTME();
+		if(tme == 1)
+			printf("Trusted Mode Enabled, PLL is TME locked.\nOverclocking is not possible.\n");
+		else if(!tme)
+			printf("Trusted Mode Disabled.\nOverclocking is possible.\n");
+	}
 
-	fsbf = GetFSB();
+	fsbf = CurPLL->GetFSB();
 	PrintFSBInfo(fsbf);
 	if(freqs)
 		PrintSupportedFrequencies();
@@ -295,7 +293,7 @@ int main(int argc, char *argv[])
 	{
 		printf("\n");
 		fsb = atoi(fsbfreq);
-		if(CheckFSB(fsb, NULL, NULL, NULL))
+		if(CurPLL->CheckFSB(fsb, NULL, NULL, NULL))
 		{
 			printf("FSB %i MHz is not supported.\n", fsb);
 			return 0;
@@ -318,7 +316,7 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		c = SetFSB(fsb);
+		c = CurPLL->SetFSB(fsb);
 		cpuf = GetCPUFreq();
 
 		if(c)

@@ -19,8 +19,11 @@ extern int name ## _GetFSB(); \
 extern int name ## _CheckFSB(int fsb, float *ram, float *pci, float *agp); \
 extern int name ## _GetFirstFSB(); \
 extern int name ## _GetNextFSB(); \
+extern int name ## _CheckTME();
 
-#define PLL_MAKE_STRUCT(textname, name, tested) {textname, tested, name ## _SetFSB, name ## _GetFSB, name ## _CheckFSB, name ## _GetFirstFSB, name ## _GetNextFSB}
+#define PLL_MAKE_STRUCT(textname, name, tested) {textname, tested, name ## _SetFSB, name ## _GetFSB, name ## _CheckFSB, name ## _GetFirstFSB, name ## _GetNextFSB, NULL}
+
+#define PLL_MAKE_STRUCT2(textname, name, tested) {textname, tested, name ## _SetFSB, name ## _GetFSB, name ## _CheckFSB, name ## _GetFirstFSB, name ## _GetNextFSB, name ## _CheckTME}
 
 typedef enum
 {
@@ -39,6 +42,7 @@ typedef struct
 	int (*CheckFSB)(int fsb, float *ram, float *pci, float *agp);
 	int (*GetFirstFSB)();
 	int (*GetNextFSB)();
+	int (*CheckTME)();
 } PLL_t;
 
 PLL_MAKE_FUNCS(ics9148_04)
@@ -59,6 +63,7 @@ PLL_MAKE_FUNCS(ics94228)
 PLL_MAKE_FUNCS(cy28331)
 PLL_MAKE_FUNCS(ics9lprs477)
 PLL_MAKE_FUNCS(slg8sp513)
+PLL_MAKE_FUNCS(ics9lprs365)
 
 const PLL_t const PLL[] =
 {
@@ -80,6 +85,7 @@ const PLL_t const PLL[] =
 	PLL_MAKE_STRUCT("cy28331", cy28331, Testing),
 	PLL_MAKE_STRUCT("ics9lprs477dkl", ics9lprs477, Tested),
 	PLL_MAKE_STRUCT("slg8sp513", slg8sp513, Tested),
+	PLL_MAKE_STRUCT2("ics9lprs365", ics9lprs365, UnTested),
 	{""}
 };
 
