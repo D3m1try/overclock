@@ -79,8 +79,7 @@ static void SetAffinity(const int cpunum)
 
 	CPU_ZERO(&cpuset);
 	CPU_SET(cpunum, &cpuset);
-	if(sched_setaffinity(0, sizeof(cpuset), &cpuset))
-		printf("SetAffinity failed\n");
+	sched_setaffinity(0, sizeof(cpuset), &cpuset);
 }
 
 static double GetCPUFreq()
@@ -94,7 +93,12 @@ static double GetCPUFreq()
 	tsc_start = rdtsc();
 	clock_gettime(CLOCK_MONOTONIC, &ts_start);
 
-	usleep(300000);
+	while(1)
+	{
+		clock_gettime(CLOCK_MONOTONIC, &ts_end);
+		if(1000000000 * (ts_end.tv_sec - ts_start.tv_sec) + (ts_end.tv_nsec - ts_start.tv_nsec) > 300000000)
+			break;
+	}
 
 	tsc_end = rdtsc();
 	clock_gettime(CLOCK_MONOTONIC, &ts_end);
