@@ -19,6 +19,10 @@
 #define BYTECOUNT 32
 #define CMD 0x00
 
+static int FSBIndex = 0;
+static const unsigned int FSB_Min = 100;
+static const unsigned int FSB_Max = 400;
+
 static int ics9lprs365_unhide(const int file)
 {
 	int res;
@@ -67,6 +71,21 @@ static int ics9lprs365_unhide(const int file)
 	return -1;
 }
 
+int ics9lprs365_CheckFSB(int fsb, float *ram, float *pci, float *agp)
+{
+	if(ram)
+		*ram = -1.0f;
+	if(pci)
+		*pci = -1.0f;
+	if(agp)
+		*agp = -1.0f;
+
+	if(fsb <= FSB_Max && fsb >= FSB_Min)
+		return 0;
+
+	return -1;
+}
+
 int ics9lprs365_SetFSB(int fsb)
 {
 	return -1;
@@ -95,34 +114,27 @@ int ics9lprs365_GetFSB()
 	}
 #endif /* DEBUG */
 
-	n = buf[14]| ((buf[13] & 0x80) << 1) | ((buf[13] & 0x40) << 3);
+	n = buf[14] | ((buf[13] & 0x80) << 1) | ((buf[13] & 0x40) << 3);
 	m = buf[13] & 0x3F;
+printf("n=%i, m=%i, n/m=%f, 14.318x(n+8)/(m+2)=%f\n", n, m, (double)n/(double)m, 14.318f*(double)(n+8)/(double)(m+2));
 
-	return (int)(25.0f*(float)n/(float)m);
-}
-
-int ics9lprs365_CheckFSB(int fsb, float *ram, float *pci, float *agp)
-{
-	if(ram)
-		*ram = -1.0;
-	if(pci)
-		*pci = -1.0;
-	if(agp)
-		*agp = -1.0;
-
-	if(fsb < 0)
-		return -1;
-
-	return -1;
+	return (int)(14.318f*(float)n/(float)m);
 }
 
 int ics9lprs365_GetFirstFSB()
 {
-	return -1;
+	FSBIndex = FSB_Min;
+
+	return FSBIndex;
 }
 
 int ics9lprs365_GetNextFSB()
 {
+	FSBIndex++;
+
+	if(FSBIndex <= FSB_Max)
+		return FSBIndex;
+
 	return -1;
 }
 

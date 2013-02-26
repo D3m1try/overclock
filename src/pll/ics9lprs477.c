@@ -23,14 +23,14 @@ static int FSBIndex = 0;
 static const unsigned int FSB_Min = 200;
 static const unsigned int FSB_Max = 500;
 
-int ics9lprs477_CheckFSB(int fsb, float *sdram, float *pci, float *agp)
+int ics9lprs477_CheckFSB(int fsb, float *ram, float *pci, float *agp)
 {
-	if(sdram)
-		*sdram = fsb;
+	if(ram)
+		*ram = fsb;
 	if(pci)
-		*pci = -1.0;
+		*pci = -1.0f;
 	if(agp)
-		*agp = -1.0;
+		*agp = -1.0f;
 
 	if(fsb <= FSB_Max && fsb >= FSB_Min)
 		return 0;
@@ -132,8 +132,13 @@ int ics9lprs477_GetFSB()
 
 	n = (buf[17] << 3) | ((buf[16] & 0xC0) >> 5);
 	m = buf[16] & 0x3F;
+printf("n=%i, m=%i, n/m=%f\n", n, m, (double)n/(double)m);
 
-	return (int)(25.0f*(float)n/(float)m);
+	n = buf[17] | ((buf[16] & 0x80) << 1) | ((buf[16] & 0x40) << 3);
+	m = buf[16] & 0x3F;
+printf("n=%i, m=%i, n/m=%f\n", n, m, (double)n/(double)m);
+
+	return (int)(14.318f*(float)(n+8)/(float)(m+2));
 }
 
 int ics9lprs477_GetFirstFSB()

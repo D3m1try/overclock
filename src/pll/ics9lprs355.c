@@ -16,26 +16,14 @@
 #include <stdio.h>
 #endif
 
-typedef struct
-{
-	unsigned char fsb;
-	unsigned char ctrlb;
-	unsigned char ctrlb1;
-} PLL_t;
 #define BYTECOUNT    22
-#define CONTROLBYTE  13
-#define CONTROLBYTE1 14
 #define CMD 0x00
 
 static int FSBIndex = 0;
+static const unsigned int FSB_Min = 100;
+static const unsigned int FSB_Max = 400;
 
-static const PLL_t const pll[] =
-{
-	/* Table containing three values
-	 * FSB, CONTROLBYTE, CONTROLBYTE1
-	 * Gathered by setting FSB using setfsb, then reviewing the Diagnosis
-	 * screen to identify what data changed
-	 */
+/*
 	{ 112, 0x88, 0x71},
 	{ 117, 0x88, 0x87},
 	{ 125, 0x88, 0xA3},
@@ -46,8 +34,7 @@ static const PLL_t const pll[] =
 	{ 167, 0x48, 0x2F},
 	{ 175, 0x48, 0x4B},
 	{ 183, 0x48, 0x67},
-	{0}
-};
+*/
 
 static int ics9lprs355_unhide(const int file)
 {
@@ -97,108 +84,75 @@ static int ics9lprs355_unhide(const int file)
 	return -1;
 }
 
+int ics9lprs355_CheckFSB(int fsb, float *ram, float *pci, float *agp)
+{
+	if(ram)
+		*ram = -1.0f;
+	if(pci)
+		*pci = -1.0f;
+	if(agp)
+		*agp = -1.0f;
+
+	if(fsb <= FSB_Max && fsb >= FSB_Min)
+		return 0;
+
+	return -1;
+}
+
 int ics9lprs355_SetFSB(int fsb)
 {
-	/* default FSB=133.33Mhz table *after* setfsb has done it's TME-workaround
-	 * default obtained by clicking setfsb's "Get FSB", then without changing
-	 * any of the sliders, click  "Set FSB". Copy 22 bytes of data here
-	 */
-
-	int i, file, res;
-	unsigned char buf[] = {0x37, 0x85, 0xFC, 0x33, 0xFF, 0xF0, 0x90, 0x11,\
-	0xD0, 0x65, 0x7D, 0x00, 0x0D, 0x88, 0xBF, 0xEF,\
-	0x2F, 0xA4, 0xF7, 0xF2, 0x23, 0x01 };
-
-	if(fsb < 0) return -1;
-
-	for(i=0; pll[i].fsb; i++)
-		if(pll[i].fsb == fsb)
-		{
-			buf[CONTROLBYTE] = pll[i].ctrlb;
-			buf[CONTROLBYTE1] = pll[i].ctrlb1;
-			break;
-		}
-		if(!buf[CONTROLBYTE]) return -1;
-
-		file = i2c_open();
-	if(file < 0) return -1;
-	res = i2c_smbus_write_block_data(file, CMD, BYTECOUNT, buf);
-	res = i2c_smbus_read_block_data(file, CMD, buf);
-	if  (buf[CONTROLBYTE]!=pll[i].ctrlb ||  buf[CONTROLBYTE1]!=pll[i].ctrlb1)       {
-		printf("ERROR: Frozen PLL - standby/resume and try again\n");
-		exit (-1);
-	}
-
-	i2c_close();
-
-	if(res < 0) return -1;
-					 #ifdef DEBUG
-					 else printf("DEBUG: %i bytes written : ", BYTECOUNT);
-		for(i=0; i<BYTECOUNT; i++) printf("%02X ", buf[i]);
-		printf("\n");
-	#endif /* DEBUG */
-
-	return 0;
+	return -1;
 }
 
 int ics9lprs355_GetFSB()
 {
-	int i, file, res;
-	/* Empty 22 byte buffer */
-	unsigned char buf[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+	int file, res;
+	unsigned int n, m;
+	unsigned char buf[32];
 
 	file = i2c_open();
-	if(file < 0) return -1;
+	if(file < 0)
+		return -1;
 	res = i2c_smbus_read_block_data(file, CMD, buf);
 	i2c_close();
 
 	if(res < 0) return -1;
 	#ifdef DEBUG
-	else printf("DEBUG: %i bytes read : ", res);
-	for(i=0; i<res; i++) printf("%02X ", buf[i]);
-	printf("\n");
+	else
+	{
+		printf("DEBUG: %i bytes read : ", res);
+		for(int i=0; i<res; i++)
+			printf("%02X ", buf[i]);
+		printf("\n");
+	}
 	#endif /* DEBUG */
 
-	for(i=0; pll[i].fsb; i++)
-		if(pll[i].ctrlb == buf[CONTROLBYTE]) return pll[i].fsb;
+	n = buf[14] | ((buf[13] & 0x80) << 1) | ((buf[13] & 0x40) << 3);
+	m = buf[13] & 0x3F;
 
-		return -1;
-}
-
-int ics9lprs355_CheckFSB(int fsb, float *sdram, float *pci, float *agp)
-{
-	int i;
-
-	if(sdram) *sdram = -1.0;
-	if(pci) *pci = -1.0;
-	if(agp) *agp = -1.0;
-
-	if(fsb < 0) return -1;
-
-	for(i=0; pll[i].fsb; i++)
-		if(pll[i].fsb == fsb) return 0;
-		return -1;
+	return (int)(25.0f*(float)n/(float)m);
 }
 
 int ics9lprs355_GetFirstFSB()
 {
-	FSBIndex = 0;
-	if(pll[FSBIndex].fsb) return pll[FSBIndex].fsb;
-	else return -1;
+	FSBIndex = FSB_Min;
+
+	return FSBIndex;
 }
 
 int ics9lprs355_GetNextFSB()
 {
 	FSBIndex++;
-	if(pll[FSBIndex].fsb) return pll[FSBIndex].fsb;
-	else return -1;
+
+	if(FSBIndex <= FSB_Max)
+		return FSBIndex;
+
+	return -1;
 }
 
 int ics9lprs355_CheckTME()
 {
-	int i, file, res;
+	int file, res;
 	unsigned char buf[BYTECOUNT];
 
 	file = i2c_open();
@@ -211,7 +165,7 @@ int ics9lprs355_CheckTME()
 
 #ifdef DEBUG
 	printf("GetFSB DEBUG: %i bytes read : ", res);
-	for(i=0; i<res; i++)
+	for(int i=0; i<res; i++)
 		printf("%02X ", buf[i]);
 	printf("\n");
 #endif /* DEBUG */
