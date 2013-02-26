@@ -303,7 +303,7 @@ int main(int argc, char *argv[])
 	{
 		tme = CurPLL->CheckTME();
 		if(tme == 1)
-			printf("\nTrusted Mode Enabled, PLL is TME locked.\nOverclocking is not possible.\n");
+			printf("\nTrusted Mode Enabled, PLL is TME locked.\n");
 		else if(!tme)
 			printf("\nTrusted Mode Disabled.\nOverclocking is possible.\n");
 	}
