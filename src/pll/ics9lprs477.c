@@ -38,6 +38,19 @@ int ics9lprs477_CheckFSB(int fsb, float *ram, float *pci, float *agp)
 	return -1;
 }
 
+static const int const DivTable[] =
+{
+	0x02, 0x03, 0x05, 0x09,
+	0x04, 0x06, 0x0A, 0x12,
+	0x08, 0x0C, 0x14, 0x24,
+	0x10, 0x18, 0x28, 0x48
+};
+
+static int ics9lprs477_CalcFSB(const unsigned int n, const unsigned int m, const unsigned int dividx)
+{
+	return 50.0f * (float)n / (float)m / (float)DivTable[dividx & 0x0F];
+}
+
 int ics9lprs477_SetFSB(int fsb)
 {
 	int file, res;
@@ -75,7 +88,7 @@ int ics9lprs477_SetFSB(int fsb)
 
 	n = (buf[17] << 3) | ((buf[16] & 0xC0) >> 5);
 	m = buf[16] & 0x3F;
-	if(ics9lprs477_CheckFSB(25.0f*(float)n/(float)m, NULL, NULL, NULL))
+	if(ics9lprs477_CheckFSB(ics9lprs477_CalcFSB(n, m, buf[20]), NULL, NULL, NULL))
 	{
 #ifdef DEBUG
 		printf("DEBUG: Read FSB out of range.\nStopping.\n");
@@ -90,6 +103,7 @@ int ics9lprs477_SetFSB(int fsb)
 	buf[16] = m & 0x3F;
 	buf[16] |= (n & 0x06) << 5;
 	buf[17] = (n >> 3) & 0xFF;
+	buf[20] = 0x00;
 
 	res = i2c_smbus_write_block_data(file, CMD, BYTECOUNT, buf);
 	i2c_close();
@@ -132,13 +146,8 @@ int ics9lprs477_GetFSB()
 
 	n = (buf[17] << 3) | ((buf[16] & 0xC0) >> 5);
 	m = buf[16] & 0x3F;
-printf("n=%i, m=%i, n/m=%f\n", n, m, (double)n/(double)m);
 
-	n = buf[17] | ((buf[16] & 0x80) << 1) | ((buf[16] & 0x40) << 3);
-	m = buf[16] & 0x3F;
-printf("n=%i, m=%i, n/m=%f\n", n, m, (double)n/(double)m);
-
-	return (int)(14.318f*(float)(n+8)/(float)(m+2));
+	return ics9lprs477_CalcFSB(n, m, buf[20]);
 }
 
 int ics9lprs477_GetFirstFSB()

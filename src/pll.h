@@ -84,7 +84,7 @@ const PLL_t const PLL[] =
 	PLL_MAKE_STRUCT("ics94215", ics94215, UnTested),
 	PLL_MAKE_STRUCT("ics94228", ics94228, UnTested),
 	PLL_MAKE_STRUCT("cy28331", cy28331, Testing),
-	PLL_MAKE_STRUCT("ics9lprs477dkl", ics9lprs477, Tested),
+	PLL_MAKE_STRUCT("ics9lprs477bkl", ics9lprs477, Tested),
 	PLL_MAKE_STRUCT("slg8sp513", slg8sp513, Tested),
 	PLL_MAKE_STRUCT_TME("ics9lprs355", ics9lprs355, UnTested),
 	PLL_MAKE_STRUCT_TME("ics9lprs365", ics9lprs365, UnTested),
