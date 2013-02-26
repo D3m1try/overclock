@@ -7,8 +7,9 @@ all: pll
 pll: *.c
 	$(CC) $(CFLAGS) -c *.c
 
+debug: CFLAGS=$(CDFLAGS)
 debug:
-	$(CC) $(CDFLAGS) -c *.c
+	$(CC) $(CFLAGS) -c *.c
 
 clean:
 	rm -f *~ *.o

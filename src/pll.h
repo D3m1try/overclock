@@ -23,7 +23,7 @@ extern int name ## _CheckTME();
 
 #define PLL_MAKE_STRUCT(textname, name, tested) {textname, tested, name ## _SetFSB, name ## _GetFSB, name ## _CheckFSB, name ## _GetFirstFSB, name ## _GetNextFSB, NULL}
 
-#define PLL_MAKE_STRUCT2(textname, name, tested) {textname, tested, name ## _SetFSB, name ## _GetFSB, name ## _CheckFSB, name ## _GetFirstFSB, name ## _GetNextFSB, name ## _CheckTME}
+#define PLL_MAKE_STRUCT_TME(textname, name, tested) {textname, tested, name ## _SetFSB, name ## _GetFSB, name ## _CheckFSB, name ## _GetFirstFSB, name ## _GetNextFSB, name ## _CheckTME}
 
 typedef enum
 {
@@ -85,7 +85,7 @@ const PLL_t const PLL[] =
 	PLL_MAKE_STRUCT("cy28331", cy28331, Testing),
 	PLL_MAKE_STRUCT("ics9lprs477dkl", ics9lprs477, Tested),
 	PLL_MAKE_STRUCT("slg8sp513", slg8sp513, Tested),
-	PLL_MAKE_STRUCT2("ics9lprs365", ics9lprs365, UnTested),
+	PLL_MAKE_STRUCT_TME("ics9lprs365", ics9lprs365, UnTested),
 	{""}
 };
 

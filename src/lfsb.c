@@ -24,14 +24,16 @@
 #include <sched.h>
 
 #define VERSION "0.4.4a"
-#define DATE    "15-Feb-2013"
+#define DATE    "26-Feb-2013"
 
 #define CPUGOVERNOR
 #define SYSLOGREPORT
+#define CPUAFFINITY
 
 #include "pll.h"
 
 static const PLL_t *CurPLL = NULL;
+extern int DeviceIndex;
 
 static void Usage()
 {
@@ -44,8 +46,9 @@ static void Usage()
 	       "   -s --supported    print list of supported PLL\n"
 	       "   -f --frequencies  print all supported freqs by PLL\n"
 	       "   -y --yes          skip confirmation\n"
+	       "   -d --device       force i2c device index\n"
 	       "\n"
-	       "example: lfsb -yf ics9248-110 100\n");
+	       "example: lfsb -y ics9248-110 115\n");
 	exit(0);
 }
 
@@ -73,6 +76,7 @@ static inline int64_t rdtsc(void)
 	return ((int64_t)j<<32) + (int64_t)i;
 }
 
+#ifdef CPUAFFINITY
 static void SetAffinity(const int cpunum)
 {
 	cpu_set_t cpuset;
@@ -81,6 +85,7 @@ static void SetAffinity(const int cpunum)
 	CPU_SET(cpunum, &cpuset);
 	sched_setaffinity(0, sizeof(cpuset), &cpuset);
 }
+#endif
 
 static double GetCPUFreq()
 {
@@ -88,20 +93,19 @@ static double GetCPUFreq()
 	struct timespec ts_start, ts_end;
 	int nsec_delay;
 
+#ifdef CPUAFFINITY
 	SetAffinity(0);
+#endif
 
 	tsc_start = rdtsc();
 	clock_gettime(CLOCK_MONOTONIC, &ts_start);
-
 	while(1)
 	{
 		clock_gettime(CLOCK_MONOTONIC, &ts_end);
 		if(1000000000 * (ts_end.tv_sec - ts_start.tv_sec) + (ts_end.tv_nsec - ts_start.tv_nsec) > 300000000)
 			break;
 	}
-
 	tsc_end = rdtsc();
-	clock_gettime(CLOCK_MONOTONIC, &ts_end);
 
 	nsec_delay = 1000000000 * (ts_end.tv_sec - ts_start.tv_sec) + (ts_end.tv_nsec - ts_start.tv_nsec);
 
@@ -250,10 +254,11 @@ int main(int argc, char *argv[])
 		{"supported", 0, 0, 's'},
 		{"frequencies", 0, 0, 'f'},
 		{"yes", 0, 0, 'y'},
+		{"device", 1, 0, 'd'},
 		{0, 0, 0, 0}
 	};
 
-	while((c = getopt_long(argc, argv, "hvsfy", long_options, NULL)) != -1)
+	while((c = getopt_long(argc, argv, "hvsfyd:", long_options, NULL)) != -1)
 	{
 		switch(c)
 		{
@@ -262,6 +267,7 @@ int main(int argc, char *argv[])
 			case 's': Supported(); break;
 			case 'f': freqs = 1; break;
 			case 'y': yes = 1; break;
+			case 'd': DeviceIndex = atoi(optarg); break;
 			default: Usage(); return 0; break;
 		}
 	}
@@ -354,4 +360,3 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
-

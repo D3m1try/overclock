@@ -4,7 +4,7 @@ CDFLAGS = -O2 -g -std=c99 -Wall -pedantic -finline -DDEBUG
 INSTALL=/usr/bin/install -c
 OBJS=i2c.o
 PLL=pll/*.o
-LIBS=-lm
+LIBS=-lm -lrt
 
 prefix = /usr/local
 sbindir = $(prefix)/bin
@@ -15,11 +15,12 @@ all: lfsb
 
 lfsb: $(OBJS) lfsb.c pll.h
 	$(MAKE) -C pll all
-	$(CC) $(CFLAGS) $(OBJS) $(PLL) $(LIBS) lfsb.c -o lfsb -lrt
+	$(CC) $(CFLAGS) $(OBJS) $(PLL) $(LIBS) lfsb.c -o lfsb
 
+debug: CFLAGS=$(CDFLAGS)
 debug: $(OBJS) lfsb.c pll.h
 	$(MAKE) -C pll debug
-	$(CC) $(CDFLAGS) $(OBJS) $(PLL) $(LIBS) lfsb.c -o lfsb
+	$(CC) $(CFLAGS) $(OBJS) $(PLL) $(LIBS) lfsb.c -o lfsb
 
 install: lfsb
 	su -c "$(INSTALL) lfsb $(sbindir)"
