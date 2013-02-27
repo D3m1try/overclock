@@ -47,7 +47,7 @@ static int ics9lprs365_unhide(const int file)
 			return -1;
 #ifdef DEBUG
 		printf("unhide DEBUG: %i bytes written : ", 13);
-		for(int i=0; i<BYTECOUNT; i++)
+		for(int i=0; i<13; i++)
 			printf("%02X ", buf[i]);
 		printf("\n");
 #endif /* DEBUG */
@@ -88,7 +88,59 @@ int ics9lprs365_CheckFSB(int fsb, float *ram, float *pci, float *agp)
 
 int ics9lprs365_SetFSB(int fsb)
 {
-	return -1;
+	int file, res;
+	unsigned int n, m;
+	unsigned char buf[32];
+
+	file = i2c_open();
+	if(file < 0)
+		return -1;
+
+	ics9lprs355_tmefix(file);
+
+	res = i2c_smbus_read_block_data(file, CMD, buf);
+	if(res != BYTECOUNT)
+	{
+		#ifdef DEBUG
+		printf("SetFSB DEBUG: %i (should be %i) bytes read : ", res, BYTECOUNT);
+		for(int i=0; i<res; i++)
+			printf("%02X ", buf[i]);
+		printf("\n");
+		#endif /* DEBUG */
+		i2c_close();
+		return -1;
+	}
+	#ifdef DEBUG
+	else
+	{
+		printf("SetFSB DEBUG: %i bytes read : ", res);
+		for(int i=0; i<res; i++)
+			printf("%02X ", buf[i]);
+		printf("\n");
+	}
+	#endif /* DEBUG */
+
+	n = (float)fsb * 3.33333333;
+	m = 8;
+
+	buf[15] |= 0x02;
+	buf[13] = (m & 0x3F) | ((n & 0x100) >> 1) | ((n & 0x200) >> 3);
+	buf[14] = n & 0xFF;
+
+	res = i2c_smbus_write_block_data(file, CMD, BYTECOUNT, buf);
+	i2c_close();
+
+	if(res < 0)
+		return -1;
+	#ifdef DEBUG
+	else
+		printf("SetFSB DEBUG: %i bytes written : ", BYTECOUNT);
+	for(int i=0; i<BYTECOUNT; i++)
+		printf("%02X ", buf[i]);
+	printf("\n");
+	#endif /* DEBUG */
+
+	return 0;
 }
 
 int ics9lprs365_GetFSB()
@@ -117,7 +169,6 @@ int ics9lprs365_GetFSB()
 
 	n = buf[14] | ((buf[13] & 0x80) << 1) | ((buf[13] & 0x40) << 3);
 	m = buf[13] & 0x3F;
-	printf("n=%i, m=%i, n/m=%f, 14.318x(n+8)/(m+2)=%f\n", n, m, (double)n/(double)m, 2.4f*(double)(n+8)/(double)(m+2));
 
 	return (int)(2.4f*(float)n/(float)m);
 }
