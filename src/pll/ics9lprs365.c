@@ -108,7 +108,7 @@ int ics9lprs365_GetFSB()
 #ifdef DEBUG
 	else
 	{
-		printf("DEBUG: %i bytes read : ", res);
+		printf("GetFSB DEBUG: %i bytes read : ", res);
 		for(int i=0; i<res; i++)
 			printf("%02X ", buf[i]);
 		printf("\n");
@@ -117,9 +117,9 @@ int ics9lprs365_GetFSB()
 
 	n = buf[14] | ((buf[13] & 0x80) << 1) | ((buf[13] & 0x40) << 3);
 	m = buf[13] & 0x3F;
-	//printf("n=%i, m=%i, n/m=%f, 14.318x(n+8)/(m+2)=%f\n", n, m, (double)n/(double)m, 14.318f*(double)(n+8)/(double)(m+2));
+	printf("n=%i, m=%i, n/m=%f, 14.318x(n+8)/(m+2)=%f\n", n, m, (double)n/(double)m, 2.4f*(double)(n+8)/(double)(m+2));
 
-	return (int)(14.318f*(float)n/(float)m);
+	return (int)(2.4f*(float)n/(float)m);
 }
 
 int ics9lprs365_GetFirstFSB()
@@ -153,7 +153,7 @@ int ics9lprs365_CheckTME()
 	i2c_close();
 
 #ifdef DEBUG
-	printf("GetFSB DEBUG: %i bytes read : ", res);
+	printf("CheckTME DEBUG: %i bytes read : ", res);
 	for(int i=0; i<res; i++)
 		printf("%02X ", buf[i]);
 	printf("\n");

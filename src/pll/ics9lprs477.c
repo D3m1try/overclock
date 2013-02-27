@@ -68,7 +68,7 @@ int ics9lprs477_SetFSB(int fsb)
 	if(res != BYTECOUNT)
 	{
 #ifdef DEBUG
-		printf("DEBUG: %i (should be %i) bytes read : ", res, BYTECOUNT);
+		printf("SetFSB DEBUG: %i (should be %i) bytes read : ", res, BYTECOUNT);
 		for(int i=0; i<res; i++)
 			printf("%02X ", buf[i]);
 		printf("\n");
@@ -79,7 +79,7 @@ int ics9lprs477_SetFSB(int fsb)
 #ifdef DEBUG
 	else
 	{
-		printf("DEBUG: %i bytes read : ", res);
+		printf("SetFSB DEBUG: %i bytes read : ", res);
 		for(int i=0; i<res; i++)
 			printf("%02X ", buf[i]);
 		printf("\n");
@@ -91,7 +91,7 @@ int ics9lprs477_SetFSB(int fsb)
 	if(ics9lprs477_CheckFSB(ics9lprs477_CalcFSB(n, m, buf[20]), NULL, NULL, NULL))
 	{
 #ifdef DEBUG
-		printf("DEBUG: Read FSB out of range.\nStopping.\n");
+		printf("SetFSB DEBUG: Read FSB out of range.\nStopping.\n");
 #endif /* DEBUG */
 		i2c_close();
 		return -1;
@@ -112,7 +112,7 @@ int ics9lprs477_SetFSB(int fsb)
 	 return -1;
 #ifdef DEBUG
   else
-		printf("DEBUG: %i bytes written : ", BYTECOUNT);
+		printf("SetFSB DEBUG: %i bytes written : ", BYTECOUNT);
   for(int i=0; i<BYTECOUNT; i++)
 		printf("%02X ", buf[i]);
   printf("\n");
@@ -137,7 +137,7 @@ int ics9lprs477_GetFSB()
 #ifdef DEBUG
 	else
 	{
-		printf("DEBUG: %i bytes read : ", res);
+		printf("GetFSB DEBUG: %i bytes read : ", res);
 		for(int i=0; i<res; i++)
 			printf("%02X ", buf[i]);
 		printf("\n");
