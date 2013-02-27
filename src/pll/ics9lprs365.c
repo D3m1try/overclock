@@ -100,6 +100,7 @@ int ics9lprs365_GetFSB()
 	file = i2c_open();
 	if(file < 0)
 		return -1;
+	ics9lprs365_unhide(file);
 	res = i2c_smbus_read_block_data(file, CMD, buf);
 	i2c_close();
 
@@ -116,7 +117,7 @@ int ics9lprs365_GetFSB()
 
 	n = buf[14] | ((buf[13] & 0x80) << 1) | ((buf[13] & 0x40) << 3);
 	m = buf[13] & 0x3F;
-printf("n=%i, m=%i, n/m=%f, 14.318x(n+8)/(m+2)=%f\n", n, m, (double)n/(double)m, 14.318f*(double)(n+8)/(double)(m+2));
+	//printf("n=%i, m=%i, n/m=%f, 14.318x(n+8)/(m+2)=%f\n", n, m, (double)n/(double)m, 14.318f*(double)(n+8)/(double)(m+2));
 
 	return (int)(14.318f*(float)n/(float)m);
 }
@@ -140,7 +141,7 @@ int ics9lprs365_GetNextFSB()
 
 int ics9lprs365_CheckTME()
 {
-	int i, file, res;
+	int file, res;
 	unsigned char buf[BYTECOUNT];
 
 	file = i2c_open();
@@ -153,7 +154,7 @@ int ics9lprs365_CheckTME()
 
 #ifdef DEBUG
 	printf("GetFSB DEBUG: %i bytes read : ", res);
-	for(i=0; i<res; i++)
+	for(int i=0; i<res; i++)
 		printf("%02X ", buf[i]);
 	printf("\n");
 #endif /* DEBUG */

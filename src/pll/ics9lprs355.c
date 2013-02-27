@@ -16,7 +16,7 @@
 #include <stdio.h>
 #endif
 
-#define BYTECOUNT    22
+#define BYTECOUNT 22
 #define CMD 0x00
 
 static int FSBIndex = 0;
@@ -129,8 +129,9 @@ int ics9lprs355_GetFSB()
 
 	n = buf[14] | ((buf[13] & 0x80) << 1) | ((buf[13] & 0x40) << 3);
 	m = buf[13] & 0x3F;
+	//printf("n=%i, m=%i, n/m=%f, 14.318x(n+8)/(m+2)=%f\n", n, m, (double)n/(double)m, 14.318f*(double)(n+8)/(double)(m+2));
 
-	return (int)(25.0f*(float)n/(float)m);
+	return (int)(14.318f*(float)n/(float)m);
 }
 
 int ics9lprs355_GetFirstFSB()
