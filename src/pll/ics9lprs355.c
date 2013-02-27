@@ -128,7 +128,7 @@ int ics9lprs355_SetFSB(int fsb)
 	if(file < 0)
 		return -1;
 
-	ics9lprs355_tmefix(const int file);
+	ics9lprs355_tmefix(file);
 
 	i2c_close();
 
