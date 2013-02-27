@@ -157,7 +157,7 @@ int ics9lprs355_SetFSB(int fsb)
 	n = (float)fsb * 3.33333333;
 	m = 8;
 
-	buf[15] |= 0x01;
+	buf[21] |= 0x01;
 	buf[13] = (m & 0x3F) | ((n & 0x100) >> 1) | ((n & 0x200) >> 3);
 	buf[14] = n & 0xFF;
 
