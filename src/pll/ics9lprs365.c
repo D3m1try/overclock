@@ -96,8 +96,6 @@ int ics9lprs365_SetFSB(int fsb)
 	if(file < 0)
 		return -1;
 
-	ics9lprs355_tmefix(file);
-
 	res = i2c_smbus_read_block_data(file, CMD, buf);
 	if(res != BYTECOUNT)
 	{
