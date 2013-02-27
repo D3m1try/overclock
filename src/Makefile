@@ -15,12 +15,12 @@ all: lfsb
 
 lfsb: $(OBJS) lfsb.c pll.h
 	$(MAKE) -C pll all
-	$(CC) $(CFLAGS) $(OBJS) $(PLL) $(LIBS) lfsb.c -o lfsb
+	$(CC) $(CFLAGS) $(OBJS) $(PLL) lfsb.c -o lfsb $(LIBS)
 
 debug: CFLAGS=$(CDFLAGS)
 debug: $(OBJS) lfsb.c pll.h
 	$(MAKE) -C pll debug
-	$(CC) $(CFLAGS) $(OBJS) $(PLL) $(LIBS) lfsb.c -o lfsb
+	$(CC) $(CFLAGS) $(OBJS) $(PLL) lfsb.c -o lfsb $(LIBS)
 
 install: lfsb
 	su -c "$(INSTALL) lfsb $(sbindir)"
