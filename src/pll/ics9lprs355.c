@@ -16,7 +16,7 @@
 #include <stdio.h>
 #endif
 
-#define BYTECOUNT 22
+#define BYTECOUNT 32
 #define CMD 0x00
 
 static int FSBIndex = 0;
