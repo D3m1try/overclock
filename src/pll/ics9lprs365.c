@@ -99,16 +99,16 @@ int ics9lprs365_SetFSB(int fsb)
 	res = i2c_smbus_read_block_data(file, CMD, buf);
 	if(res != BYTECOUNT)
 	{
-		#ifdef DEBUG
+#ifdef DEBUG
 		printf("SetFSB DEBUG: %i (should be %i) bytes read : ", res, BYTECOUNT);
 		for(int i=0; i<res; i++)
 			printf("%02X ", buf[i]);
 		printf("\n");
-		#endif /* DEBUG */
+#endif /* DEBUG */
 		i2c_close();
 		return -1;
 	}
-	#ifdef DEBUG
+#ifdef DEBUG
 	else
 	{
 		printf("SetFSB DEBUG: %i bytes read : ", res);
@@ -116,7 +116,7 @@ int ics9lprs365_SetFSB(int fsb)
 			printf("%02X ", buf[i]);
 		printf("\n");
 	}
-	#endif /* DEBUG */
+#endif /* DEBUG */
 
 	n = (float)fsb * 3.33333333;
 	m = 8;
@@ -130,13 +130,13 @@ int ics9lprs365_SetFSB(int fsb)
 
 	if(res < 0)
 		return -1;
-	#ifdef DEBUG
+#ifdef DEBUG
 	else
 		printf("SetFSB DEBUG: %i bytes written : ", BYTECOUNT);
 	for(int i=0; i<BYTECOUNT; i++)
 		printf("%02X ", buf[i]);
 	printf("\n");
-	#endif /* DEBUG */
+#endif /* DEBUG */
 
 	return 0;
 }
