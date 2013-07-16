@@ -65,6 +65,7 @@ PLL_MAKE_FUNCS(ics9lprs477)
 PLL_MAKE_FUNCS(slg8sp513)
 PLL_MAKE_FUNCS(ics9lprs355)
 PLL_MAKE_FUNCS(ics9lprs365)
+PLL_MAKE_FUNCS(ics9lprs113)
 
 const PLL_t const PLL[] =
 {
@@ -88,6 +89,7 @@ const PLL_t const PLL[] =
 	PLL_MAKE_STRUCT("slg8sp513", slg8sp513, Tested),
 	PLL_MAKE_STRUCT_TME("ics9lprs355", ics9lprs355, UnTested),
 	PLL_MAKE_STRUCT_TME("ics9lprs365", ics9lprs365, UnTested),
+	PLL_MAKE_STRUCT("ics9lprs113aklf", ics9lprs113, UnTested),
 	{""}
 };
 

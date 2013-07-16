@@ -23,8 +23,8 @@
 #include <time.h>
 #include <sched.h>
 
-#define VERSION "0.4.4"
-#define DATE    "03-Mar-2013"
+#define VERSION "0.4.5"
+#define DATE    "16-Jul-2013"
 
 #define CPUGOVERNOR
 #define SYSLOGREPORT
