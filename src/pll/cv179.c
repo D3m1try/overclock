@@ -16,37 +16,25 @@
 #include <stdio.h>
 #endif
 
-typedef struct
-{
-	unsigned int fsb;
-	unsigned char ctrlb;
-	float pci;
-} PLL_t;
 #define BYTECOUNT   20
 #define CONTROLBYTE 17
 #define CMD 0x00
+#define MAXCTRL 0xff
+#define MAXFSB  169
+#define MINCTRL 0x78
+#define MINFSB  80
 
 static int FSBIndex = 0;
 
-static const PLL_t const pll[] =
+unsigned int cv179_ictrl2fsb(unsigned int ictrl)
 {
-	{80, 0x78, 33.3},
-	{85, 0x80, 33.3},
-	{90, 0x88, 33.3},
-	{95, 0x8E, 33.3},
-	{100, 0x96, 33.3},
-	{105, 0x9E, 33.3},
-	{110, 0xA5, 33.3},
-	{115, 0xAE, 33.3},
-	{120, 0xB8, 33.3},
-	{125, 0xBC, 33.3},
-	{130, 0xC3, 33.3},
-	{135, 0xC9, 33.3},
-	{145, 0xDA, 33.3},
-	{150, 0xF4, 33.3},
-	{166, 0xFA, 33.3},
-	{0}
-};
+    return (unsigned int)((MAXFSB-MINFSB)*(ictrl-MINCTRL)/(MAXCTRL-MINCTRL)+MINFSB);
+}
+
+unsigned int cv179_fsb2ictrl(unsigned int fsb)
+{
+    return (unsigned int)((fsb-MINFSB)*(MAXCTRL-MINCTRL)/(MAXFSB-MINFSB)+MINCTRL);
+}
 
 static int cv179_unhide(const int file)
 {
@@ -99,20 +87,23 @@ static int cv179_unhide(const int file)
 int cv179_SetFSB(int fsb)
 {
 	int i, file, res;
-	unsigned char buf[BYTECOUNT], ctrl=0;
+	unsigned char buf[BYTECOUNT], ctrl=0, hctrl=0;
+	unsigned int ictrl;
 
 	if(fsb < 0)
 		return -1;
-
-	for(i=0; pll[i].fsb; i++)
-		if(pll[i].fsb == fsb)
-		{
-			ctrl = pll[i].ctrlb;
-			break;
-		}
-	if(!ctrl)
+	ictrl = cv179_fsb2ictrl(fsb);
+	if((ictrl > MAXCTRL) || (ictrl < MINCTRL)){ 
+#ifdef DEBUG
+	printf("SetFSB DEBUG: error ictrl=%u", ictrl);
+#endif /* DEBUG */
 		return -1;
-
+	}
+	hctrl = (ictrl>255?1:0);
+	ctrl = (unsigned char)(ictrl%255);
+#ifdef DEBUG
+	printf("SetFSB DEBUG: ictrl=%u, hctrl=%u, ctrl=%u\n", ictrl, hctrl, ctrl);
+#endif /* DEBUG */
 	file = i2c_open();
 	if(file < 0)
 		return -1;
@@ -125,19 +116,22 @@ int cv179_SetFSB(int fsb)
 		printf("%02X ", buf[i]);
 	printf("\n");
 #endif /* DEBUG */
-	if((res != BYTECOUNT) && (res != 25))
+	if((res > 25) || (res<20))
 	{
+#ifdef DEBUG
+		printf("SetFSB DEBUG: read error. res=%i\n", res);
+#endif /* DEBUG */
 		i2c_close();
 		return -1;
 	}
 
+	buf[CONTROLBYTE-1] |= hctrl; // seems not working with cv179 (actualy there is no datasheet for cv179) must work with cv183
 	buf[CONTROLBYTE] = ctrl;
-	res = i2c_smbus_write_block_data(file, CMD, 20, buf);
-//	res = i2c_smbus_write_block_data(file, CMD, BYTECOUNT, buf);
+	res = i2c_smbus_write_block_data(file, CMD, BYTECOUNT, buf);
 	i2c_close();
 	if(res){
 #ifdef DEBUG
-	printf("SetFSB DEBUG: wrire error. code=%i", res);
+	printf("SetFSB DEBUG: wrire error. res=%i\n", res);
 #endif /* DEBUG */
 		return -1;
 	}
@@ -156,6 +150,7 @@ int cv179_GetFSB()
 {
 	int i, file, res;
 	unsigned char buf[BYTECOUNT];
+	unsigned int ictrl, fsb;
 
 	file = i2c_open();
 	if(file < 0)
@@ -174,16 +169,17 @@ int cv179_GetFSB()
 	if(res < 0)
 		return -1;
 
-	for(i=0; pll[i].fsb; i++)
-		if(pll[i].ctrlb == buf[CONTROLBYTE])
-			return pll[i].fsb;
+	ictrl = (buf[CONTROLBYTE-1] & 1)*256 + buf[CONTROLBYTE];
+	fsb = cv179_ictrl2fsb(ictrl);
+#ifdef DEBUG
+	printf("GetFSB DEBUG: ictrl=%u, fsb=%u\n", ictrl, fsb);
+#endif /* DEBUG */
 
-	return -1;
+	return fsb;
 }
 
 int cv179_CheckFSB(int fsb, float *sdram, float *pci, float *agp)
 {
-	int i;
 
 	if(sdram)
 		*sdram = -1.0;
@@ -192,34 +188,22 @@ int cv179_CheckFSB(int fsb, float *sdram, float *pci, float *agp)
 	if(agp)
 		*agp = -1.0;
 
-	if(fsb < 0)
+	if((fsb < MINFSB)||(fsb>MAXFSB))
 		return -1;
-
-	for(i=0; pll[i].fsb; i++)
-		if(pll[i].fsb == fsb)
-		{
-			if(pci)
-				*pci = pll[i].pci;
-			return 0;
-		}
-
-	return -1;
+	return 0;
 }
 
 int cv179_GetFirstFSB()
 {
 	FSBIndex = 0;
-	if(pll[FSBIndex].fsb)
-		return pll[FSBIndex].fsb;
-	else
-		return -1;
+	return MINFSB;
 }
 
 int cv179_GetNextFSB()
 {
 	FSBIndex++;
-	if(pll[FSBIndex].fsb)
-		return pll[FSBIndex].fsb;
+	if((MINFSB+FSBIndex)<=MAXFSB)
+		return (int)(MINFSB+FSBIndex);
 	else
 		return -1;
 }
