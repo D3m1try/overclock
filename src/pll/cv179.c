@@ -16,7 +16,7 @@
 #include <stdio.h>
 #endif
 
-#define BYTECOUNT   20
+#define BYTECOUNT   25
 #define CONTROLBYTE 17
 #define CMD 0x00
 #define MAXCTRL 0xff
@@ -46,7 +46,7 @@ static int cv179_unhide(const int file)
 		return -1;
 #ifdef DEBUG
 	else
-		printf("unhide DEBUG: %i bytes read : ", res);
+		printf("unhide DEBUG: %i bytes read :    ", res);
 	for(int i=0; i<res; i++)
 		printf("%02X ", buf[i]);
 	printf("\n");
@@ -59,7 +59,7 @@ static int cv179_unhide(const int file)
 		if(res)
 			return -1;
 #ifdef DEBUG
-		printf("unhide DEBUG: %i bytes written : ", 13);
+		printf("unhide DEBUG: %i bytes written :    ", 13);
 		for(int i=0; i<BYTECOUNT; i++)
 			printf("%02X ", buf[i]);
 		printf("\n");
@@ -72,7 +72,7 @@ static int cv179_unhide(const int file)
 	if(res < 0)
 		return -1;
 #ifdef DEBUG
-	printf("unhide DEBUG: %i bytes read : ", res);
+	printf("unhide DEBUG: %i bytes read :    ", res);
 	for(int i=0; i<res; i++)
 		printf("%02X ", buf[i]);
 	printf("\n");
@@ -111,7 +111,7 @@ int cv179_SetFSB(int fsb)
 	cv179_unhide(file);
 	res = i2c_smbus_read_block_data(file, CMD, buf);
 #ifdef DEBUG
-	printf("SetFSB DEBUG: %i bytes read : ", res);
+	printf("SetFSB DEBUG: %i bytes read :    ", res);
 	for(i=0; i<res; i++)
 		printf("%02X ", buf[i]);
 	printf("\n");
@@ -138,7 +138,7 @@ int cv179_SetFSB(int fsb)
 
 #ifdef DEBUG
 	printf("SetFSB DEBUG: %i bytes written : ", BYTECOUNT);
-	for(i=0; i<res; i++)
+	for(i=0; i<BYTECOUNT; i++)
 		printf("%02X ", buf[i]);
 	printf("\n");
 #endif /* DEBUG */
@@ -161,7 +161,7 @@ int cv179_GetFSB()
 	i2c_close();
 
 #ifdef DEBUG
-	printf("GetFSB DEBUG: %i bytes read : ", res);
+	printf("GetFSB DEBUG: %i bytes read :    ", res);
 	for(i=0; i<res; i++)
 		printf("%02X ", buf[i]);
 	printf("\n");
