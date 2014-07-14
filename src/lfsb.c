@@ -140,7 +140,7 @@ static void Supported()
 {
 	int i;
 
-	printf("Supported PLL:\n");
+	printf("Supported1 PLL:\n");
 	for(i=0; PLL[i].name[0]; i++)
 	{
 		printf("%s (%s)\n", PLL[i].name, GetPLLFlags(PLL[i].flags));
