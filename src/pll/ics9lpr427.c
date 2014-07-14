@@ -97,7 +97,7 @@ static const int const DivTable[] =
 
 static int ics9lpr427_CalcFSB(const unsigned int n, const unsigned int m, const unsigned int dividx)
 {
-	return 150.0f * (float)n / (float)m / (float)DivTable[dividx & 0x0F];
+	return 125.0f * (float)n / (float)m / (float)DivTable[dividx & 0x0F];
 }
 
 int ics9lpr427_SetFSB(int fsb)
@@ -147,7 +147,7 @@ int ics9lpr427_SetFSB(int fsb)
 	}
 
 //	m = 18;
-	n = (fsb * m * DivTable[(buf[28] & 0x0F)])/150;
+	n = (fsb * m * DivTable[(buf[28] & 0x0F)])/125;
 
 	buf[11] = m & 0x3F;
 	buf[11] |= (n & 0x03) << 6;
