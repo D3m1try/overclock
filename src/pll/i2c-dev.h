@@ -27,8 +27,9 @@
 #include <linux/types.h>
 #include <sys/ioctl.h>
 
+#ifndef NULL
 #define NULL 0
-
+#endif
 /* -- i2c.h -- */
 
 

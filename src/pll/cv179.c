@@ -86,7 +86,10 @@ static int cv179_unhide(const int file)
 
 int cv179_SetFSB(int fsb)
 {
-	int i, file, res;
+#ifdef DEBUG
+int i;
+#endif
+	int file, res;
 	unsigned char buf[BYTECOUNT], ctrl=0, hctrl=0;
 	unsigned int ictrl;
 
@@ -148,7 +151,10 @@ int cv179_SetFSB(int fsb)
 
 int cv179_GetFSB()
 {
-	int i, file, res;
+#ifdef DEBUG
+	int i;
+#endif
+	int file, res;
 	unsigned char buf[BYTECOUNT];
 	unsigned int ictrl, fsb;
 
