@@ -69,6 +69,7 @@ PLL_MAKE_FUNCS(ics9lpr427)
 PLL_MAKE_FUNCS(ics9lprs113)
 PLL_MAKE_FUNCS(rtm875t_606)
 PLL_MAKE_FUNCS(cv179)
+PLL_MAKE_FUNCS(ics9ums9610bl)
 
 const PLL_t const PLL[] =
 {
@@ -96,6 +97,7 @@ const PLL_t const PLL[] =
 	PLL_MAKE_STRUCT("ics9lprs113aklf", ics9lprs113, UnTested),
 	PLL_MAKE_STRUCT_TME("rtm875t-606", rtm875t_606, UnTested),
 	PLL_MAKE_STRUCT("cv179", cv179, Tested),
+	PLL_MAKE_STRUCT_TME("ics9ums9610bl", ics9ums9610bl, UnTested),
 	{""}
 };
 
