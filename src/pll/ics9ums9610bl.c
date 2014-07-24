@@ -95,6 +95,7 @@ const alg1_t alg1_ics9ums9610bl =
     &bc_ics9ums9610bl[0],        // byte count bitmap
     &dt_ics9ums9610bl[0],        // divide table bitmap
     &TME_ics9ums9610bl[0],       // TME bitmap
+    1,                // TME unlock value
     4.773f,           // M, N ratio (for the real FSB value calculation)
     23,               // byte count when read in unhide mode / write
     16,               // byte count when read in hyde mode / write

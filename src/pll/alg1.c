@@ -81,7 +81,6 @@ int alg1_unhide( const alg1_t *alg, const int file)
 		printf("%02X ", buf[i]);
 	printf("\n");
 #endif /* DEBUG */
-
 	if(res == (alg->bc+1) && get_bb(alg->bc_map, buf) == alg->bc)
 	return 0;
 
@@ -234,6 +233,60 @@ int alg1_GetNextFSB(const alg1_t *alg)
 	return -1;
 }
 
+static int alg1_SetTME(const alg1_t *alg)
+{
+	int file, res;
+	unsigned char buf[2*alg->bc];
+
+	file = i2c_open();
+	if(file < 0)
+		return -1;
+
+	res = i2c_smbus_read_block_data(file, alg->cmd, buf);
+	if(res != alg->bc)
+	{
+#ifdef DEBUG
+		printf("SetTME DEBUG: %i (should be %i) bytes read : ", res, alg->bc);
+		for(int i=0; i<res; i++)
+			printf("%02X ", buf[i]);
+		printf("\n");
+#endif /* DEBUG */
+		i2c_close();
+		return -1;
+	}
+#ifdef DEBUG
+	else
+	{
+		printf("SetTME DEBUG: %i bytes read :    ", res);
+		for(int i=0; i<res; i++)
+			printf("%02X ", buf[i]);
+		printf("\n");
+	}
+#endif /* DEBUG */
+
+	set_bb(alg->TME_map, buf, alg->TME_unlock);
+	res = i2c_smbus_write_block_data(file, alg->cmd, alg->bc, buf);
+	i2c_close();
+
+ if(res < 0){
+#ifdef DEBUG
+	printf("SetTME DEBUG: write error code=%i \n", res);
+#endif /* DEBUG */
+
+	 return -1;
+ }
+#ifdef DEBUG
+  else
+		printf("SetTME DEBUG: %i bytes written : ", alg->bc);
+  for(int i=0; i<alg->bc; i++)
+		printf("%02X ", buf[i]);
+  printf("\n");
+#endif /* DEBUG */
+
+	return 0;
+}
+
+
 int alg1_CheckTME(const alg1_t *alg)
 {
 	int file, res;
@@ -255,6 +308,8 @@ int alg1_CheckTME(const alg1_t *alg)
 #endif /* DEBUG */
 	if(res < 0)
 		return -1;
+	if(get_bb(alg->TME_map, buf)) 
+	    alg1_SetTME(alg);
 
 	if(get_bb(alg->TME_map, buf))
 		return 1;
