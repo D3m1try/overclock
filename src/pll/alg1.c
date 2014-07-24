@@ -68,7 +68,7 @@ int alg1_unhide( const alg1_t *alg, const int file)
 	else
 		return 0;
 
-	res = i2c_smbus_read_block_data(file, alg->bc_hide, buf);
+	res = i2c_smbus_read_block_data(file, alg->cmd, buf);
 	if(res < 0)
 		return -1;
 #ifdef DEBUG
