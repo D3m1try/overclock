@@ -38,11 +38,11 @@ typedef struct
 
 unsigned int calc_N(const alg1_t *alg, unsigned int fsb, const unsigned char *buf);
 
-static int alg1_unhide( const alg1_t *alg, const int file);
+int alg1_unhide( const alg1_t *alg, const int file);
 
 int alg1_CheckFSB(const alg1_t *alg, int fsb, float *ram, float *pci, float *agp);
 
-static int alg1_CalcFSB(const alg1_t *alg, const unsigned int n, const unsigned int m, const unsigned char * buf);
+int alg1_CalcFSB(const alg1_t *alg, const unsigned int n, const unsigned int m, const unsigned char * buf);
 
 int alg1_SetFSB(const alg1_t *alg, int fsb);
 

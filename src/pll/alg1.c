@@ -24,7 +24,7 @@ unsigned int calc_N(const alg1_t *alg, unsigned int fsb, const unsigned char *bu
     return fsb * get_bb(alg->M_map, buf) * (alg->dt_enable?alg->DivTable[get_bb(alg->dt_map, buf)]:1) / alg->mn_ratio;
 }
 
-static int alg1_unhide( const alg1_t *alg, const int file)
+int alg1_unhide( const alg1_t *alg, const int file)
 {
 	int res;
 	// Prevent buffer overflow when wrong chip. 
@@ -101,7 +101,7 @@ int alg1_CheckFSB(const alg1_t *alg, int fsb, float *ram, float *pci, float *agp
 }
 
 
-static int alg1_CalcFSB(const alg1_t *alg, const unsigned int n, const unsigned int m, const unsigned char * buf)
+int alg1_CalcFSB(const alg1_t *alg, const unsigned int n, const unsigned int m, const unsigned char * buf)
 {
 	return alg->mn_ratio * (float)n / (float)m / (float)(alg->dt_enable?alg->DivTable[get_bb(alg->dt_map, buf)]:1);
 }

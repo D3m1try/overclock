@@ -109,7 +109,7 @@ const alg1_t alg1_ics9ums9610bl =
 //-----------------------------------------------------------------------------------------------
 // TODO: need rework main code to implement algorithm based architecture
 
-static int ics9ums9610bl_unhide(const int file)
+int ics9ums9610bl_unhide(const int file)
 {
     return alg1_unhide(&alg1_ics9ums9610bl, file);
 }
@@ -119,7 +119,7 @@ int ics9ums9610bl_CheckFSB(int fsb, float *ram, float *pci, float *agp)
     return alg1_CheckFSB(&alg1_ics9ums9610bl, fsb, ram, pci, agp);
 }
 
-static int ics9ums9610bl_CalcFSB(const unsigned int n, const unsigned int m, const unsigned char * buf)
+int ics9ums9610bl_CalcFSB(const unsigned int n, const unsigned int m, const unsigned char * buf)
 {
     return alg1_CalcFSB(&alg1_ics9ums9610bl, n, m, buf);
 }

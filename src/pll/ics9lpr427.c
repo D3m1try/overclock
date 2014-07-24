@@ -104,7 +104,7 @@ const alg1_t alg1_ics9lpr427 =
 //-----------------------------------------------------------------------------------------------
 // TODO: need rework main code to implement algorithm based architecture
 
-static int ics9lpr427_unhide(const int file)
+int ics9lpr427_unhide(const int file)
 {
     return alg1_unhide(&alg1_ics9lpr427, file);
 }
@@ -114,7 +114,7 @@ int ics9lpr427_CheckFSB(int fsb, float *ram, float *pci, float *agp)
     return alg1_CheckFSB(&alg1_ics9lpr427, fsb, ram, pci, agp);
 }
 
-static int ics9lpr427_CalcFSB(const unsigned int n, const unsigned int m, const unsigned char * buf)
+int ics9lpr427_CalcFSB(const unsigned int n, const unsigned int m, const unsigned char * buf)
 {
     return alg1_CalcFSB(&alg1_ics9lpr427, n, m, buf);
 }
