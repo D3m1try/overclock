@@ -96,7 +96,7 @@ const alg1_t alg1_ics9ums9610bl =
     &dt_ics9ums9610bl[0],        // divide table bitmap
     &TME_ics9ums9610bl[0],       // TME bitmap
     4.773f,           // M, N ratio (for the real FSB value calculation)
-    22,               // byte count when read in unhide mode / write
+    15,               // byte count when read in unhide mode / write
     15,               // byte count when read in hyde mode / write
     0,                // command
     0,                // Divide table enable or not
