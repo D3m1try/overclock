@@ -33,8 +33,12 @@ int alg1_unhide( const alg1_t *alg, const int file)
 	unsigned char buf[2*alg->bc];
 
 	res = i2c_smbus_read_block_data(file, alg->cmd, buf);
-	if(res < 0)
+	if(res < 0){
+#ifdef DEBUG
+		printf("unhide DEBUG: read error. code=%i\n", res);
+#endif /* DEBUG */
 		return -1;
+	}
 #ifdef DEBUG
 	else
 		printf("unhide DEBUG: %i bytes read :    ", res);
@@ -88,7 +92,7 @@ int alg1_unhide( const alg1_t *alg, const int file)
 int alg1_CheckFSB(const alg1_t *alg, int fsb, float *ram, float *pci, float *agp)
 {
 	if(ram)
-		*ram = fsb;
+		*ram = -1.0f;
 	if(pci)
 		*pci = -1.0f;
 	if(agp)
@@ -106,7 +110,7 @@ int alg1_CalcFSB(const alg1_t *alg, const unsigned int n, const unsigned int m, 
 	return alg->mn_ratio * (float)n / (float)m / (float)(alg->dt_enable?alg->DivTable[get_bb(alg->dt_map, buf)]:1);
 }
 
-int alg1_SetFSB(const alg1_t *alg, int fsb)
+int alg1_SetFSB(const alg1_t *alg, int fsb, int test)
 {
 	int file, res;
 	unsigned int n, m;
@@ -159,7 +163,9 @@ int alg1_SetFSB(const alg1_t *alg, int fsb)
 		printf("SetFSB DEBUG: n=%i, m=%i, dt=%i \n", n, m, alg->dt_enable?get_bb(alg->dt_map, buf):1);
 #endif /* DEBUG */
 
-	res = i2c_smbus_write_block_data(file, alg->cmd, alg->bc, buf);
+	if (test == 0) 
+	    res = i2c_smbus_write_block_data(file, alg->cmd, alg->bc, buf);
+	else printf("SetFSB simulated\n");
 	i2c_close();
 
  if(res < 0)

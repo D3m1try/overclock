@@ -121,7 +121,7 @@ int ics9lpr427_CalcFSB(const unsigned int n, const unsigned int m, const unsigne
 
 int ics9lpr427_SetFSB(int fsb)
 {
-    return alg1_SetFSB(&alg1_ics9lpr427, fsb);
+    return alg1_SetFSB(&alg1_ics9lpr427, fsb, 0);
 }
 
 int ics9lpr427_GetFSB()

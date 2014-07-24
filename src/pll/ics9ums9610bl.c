@@ -29,8 +29,8 @@ const BB_t const N_ics9ums9610bl[] =
 {"7",   5, 7},
 {"8",   4, 7},
 {"9",   4, 6},
-//{"10", 21, 7}, // Try without unhide,
-//{"11", 21, 6},
+{"10", 21, 7},
+{"11", 21, 6},
 {""}
 };
 
@@ -96,8 +96,8 @@ const alg1_t alg1_ics9ums9610bl =
     &dt_ics9ums9610bl[0],        // divide table bitmap
     &TME_ics9ums9610bl[0],       // TME bitmap
     4.773f,           // M, N ratio (for the real FSB value calculation)
-    15,               // byte count when read in unhide mode / write
-    15,               // byte count when read in hyde mode / write
+    23,               // byte count when read in unhide mode / write
+    16,               // byte count when read in hyde mode / write
     0,                // command
     0,                // Divide table enable or not
     &DivTable_ics9ums9610bl[0],     // Divide table
@@ -126,7 +126,7 @@ int ics9ums9610bl_CalcFSB(const unsigned int n, const unsigned int m, const unsi
 
 int ics9ums9610bl_SetFSB(int fsb)
 {
-    return alg1_SetFSB(&alg1_ics9ums9610bl, fsb);
+    return alg1_SetFSB(&alg1_ics9ums9610bl, fsb, 0);
 }
 
 int ics9ums9610bl_GetFSB()

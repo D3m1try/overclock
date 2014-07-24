@@ -44,7 +44,7 @@ int alg1_CheckFSB(const alg1_t *alg, int fsb, float *ram, float *pci, float *agp
 
 int alg1_CalcFSB(const alg1_t *alg, const unsigned int n, const unsigned int m, const unsigned char * buf);
 
-int alg1_SetFSB(const alg1_t *alg, int fsb);
+int alg1_SetFSB(const alg1_t *alg, int fsb, int test);
 
 int alg1_GetFSB(const alg1_t *alg);
 
