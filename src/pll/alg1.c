@@ -158,6 +158,7 @@ int alg1_SetFSB(const alg1_t *alg, int fsb, int test)
 
 	n = calc_N(alg, fsb, buf);
 	set_bb(alg->N_map, buf, n);
+	set_bb(alg->TME_map, buf, alg->TME_unlock);
 #ifdef DEBUG
 		printf("SetFSB DEBUG: n=%i, m=%i, dt=%i \n", n, m, alg->dt_enable?get_bb(alg->dt_map, buf):1);
 #endif /* DEBUG */
