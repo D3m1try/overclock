@@ -97,7 +97,7 @@ const alg1_t alg1_ics9lpr427 =
     0,                // command
     1,                // Divide table enable or not
     &DivTable[0],     // Divide table
-    100,              // FSB_Min
+    80,              // FSB_Min
     400               // FSB_Max
 } ;
 

@@ -11,9 +11,7 @@
  */
 #include "alg1.h"
 
-#ifdef DEBUG
 #include <stdio.h>
-#endif
 
 
 static int FSBIndex = 0;
