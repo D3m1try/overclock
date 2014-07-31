@@ -91,7 +91,9 @@ const alg1_t alg1_ics9ums9610bl =
 {
     "ics9ums9610bl",    // PLL name
     &N_ics9ums9610bl[0],         // N bitmap
+    0,                           // N addition
     &M_ics9ums9610bl[0],         // M bitmap
+    0,                           // M addition
     &bc_ics9ums9610bl[0],        // byte count bitmap
     &dt_ics9ums9610bl[0],        // divide table bitmap
     &TME_ics9ums9610bl[0],       // TME bitmap

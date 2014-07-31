@@ -86,7 +86,9 @@ const alg1_t alg1_ics9lpr427 =
 {
     "ics9lpr427",    // PLL name
     &N_bm[0],         // N bitmap
+    0,                // N addition
     &M_bm[0],         // M bitmap
+    0,                // M addition
     &bc_bm[0],        // byte count bitmap
     &dt_bm[0],        // divide table bitmap
     &TME_bm[0],       // TME bitmap

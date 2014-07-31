@@ -19,7 +19,7 @@ static int FSBIndex = 0;
 
 unsigned int calc_N(const alg1_t *alg, unsigned int fsb, const unsigned char *buf)
 {
-    return fsb * get_bb(alg->M_map, buf) * (alg->dt_enable?alg->DivTable[get_bb(alg->dt_map, buf)]:1) / alg->mn_ratio;
+    return fsb * (get_bb(alg->M_map, buf)-alg->M_add) * (alg->dt_enable?alg->DivTable[get_bb(alg->dt_map, buf)]:1) / alg->mn_ratio - alg->N_add;
 }
 
 int alg1_unhide( const alg1_t *alg, const int file)
@@ -104,7 +104,7 @@ int alg1_CheckFSB(const alg1_t *alg, int fsb, float *ram, float *pci, float *agp
 
 int alg1_CalcFSB(const alg1_t *alg, const unsigned int n, const unsigned int m, const unsigned char * buf)
 {
-	return alg->mn_ratio * (float)n / (float)m / (float)(alg->dt_enable?alg->DivTable[get_bb(alg->dt_map, buf)]:1);
+	return alg->mn_ratio * (float)(n+alg->N_add)/ (float)(m+alg->M_add) / (float)(alg->dt_enable?alg->DivTable[get_bb(alg->dt_map, buf)]:1);
 }
 
 int alg1_SetFSB(const alg1_t *alg, int fsb, int test)
