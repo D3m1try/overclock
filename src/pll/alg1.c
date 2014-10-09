@@ -121,7 +121,7 @@ int alg1_SetFSB(const alg1_t *alg, int fsb, int test)
 		return -1;
 
 	res = i2c_smbus_read_block_data(file, alg->cmd, buf);
-	if(res != alg->bc)
+	if((res != alg->bc) || test == 1)
 	{
 #ifdef DEBUG
 		printf("SetFSB DEBUG: %i (should be %i) bytes read : ", res, alg->bc);
