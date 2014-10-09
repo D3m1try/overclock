@@ -99,7 +99,7 @@ const alg1_t alg1_ics932s421b =
     1,                // TME unlock value
     14.318f,           // M, N ratio (for the real FSB value calculation)
     21,               // byte count when read in unhide mode / write
-    7,               // byte count when read in hyde mode / write
+    9,               // byte count when read in hyde mode / write
     0,                // command
     1,                // Divide table enable or not
     &DivTable_ics932s421b[0],     // Divide table
