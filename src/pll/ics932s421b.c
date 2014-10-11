@@ -128,7 +128,7 @@ int ics932s421b_CalcFSB(const unsigned int n, const unsigned int m, const unsign
 
 int ics932s421b_SetFSB(int fsb)
 {
-    return alg1_SetFSB(&alg1_ics932s421b, fsb, 1);
+    return alg1_SetFSB(&alg1_ics932s421b, fsb, 0);
 }
 
 int ics932s421b_GetFSB()
