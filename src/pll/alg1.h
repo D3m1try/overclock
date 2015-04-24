@@ -25,8 +25,8 @@ typedef struct
     const BB_t * M_map;      // bitmap for M
     int   M_add;             // M addition
     const BB_t * bc_map;     // bitmap for bc
-    const BB_t * dt_map;     // bitmap for bc
-    const BB_t * TME_map;    // bitmap for bc
+    const BB_t * dt_map;     // bitmap for dt
+    const BB_t * TME_map;    // bitmap for TME
     unsigned int TME_unlock; // TME_unlock value
     float mn_ratio;          // M, N ratio (for the real FSB value calculation)
     int bc;                  // byte count when read in unhide mode / write
