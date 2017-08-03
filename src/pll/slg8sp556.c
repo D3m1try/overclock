@@ -1,8 +1,8 @@
 
 /*
- *  C Implementation: slg8sp513
+ *  C Implementation: slg8sp556
  *
- * Description: slg8sp513
+ * Description: slg8sp556
  *
  *
  * Author: Nikolay Kislitsa <deusexbeer@gmail.com>, (C) 2013
@@ -65,7 +65,7 @@ static const PLL_t const pll[] =
 	{0}
 };
 
-static int slg8sp513_unhide(const int file)
+static int slg8sp556_unhide(const int file)
 {
 	int res;
 	unsigned char buf[BYTECOUNT];
@@ -113,7 +113,7 @@ static int slg8sp513_unhide(const int file)
 	return -1;
 }
 
-int slg8sp513_SetFSB(int fsb)
+int slg8sp556_SetFSB(int fsb)
 {
 	int i, file, res;
 	unsigned char buf[BYTECOUNT], ctrl=0;
@@ -134,7 +134,7 @@ int slg8sp513_SetFSB(int fsb)
 	if(file < 0)
 		return -1;
 
-	slg8sp513_unhide(file);
+	slg8sp556_unhide(file);
 	res = i2c_smbus_read_block_data(file, CMD, buf);
 #ifdef DEBUG
 	printf("SetFSB DEBUG: %i bytes read : ", res);
@@ -155,16 +155,22 @@ int slg8sp513_SetFSB(int fsb)
 		return -1;
 
 #ifdef DEBUG
+	printf("SetFSB DEBUG: bytes to be written : ");
+	for(i=0; i<BYTECOUNT; i++)
+		printf("%02X ", buf[i]);
+
 	printf("SetFSB DEBUG: %i bytes written : ", BYTECOUNT);
 	for(i=0; i<res; i++)
 		printf("%02X ", buf[i]);
+	printf("\n");
+	printf(slg8sp556_GetFSB());
 	printf("\n");
 #endif /* DEBUG */
 
 	return 0;
 }
 
-int slg8sp513_GetFSB()
+int slg8sp556_GetFSB()
 {
 	int i, file, res;
 	unsigned char buf[BYTECOUNT];
@@ -173,7 +179,7 @@ int slg8sp513_GetFSB()
 	if(file < 0)
 		return -1;
 
-	slg8sp513_unhide(file);
+	slg8sp556_unhide(file);
 	res = i2c_smbus_read_block_data(file, CMD, buf);
 	i2c_close();
 
@@ -193,7 +199,7 @@ int slg8sp513_GetFSB()
 	return -1;
 }
 
-int slg8sp513_CheckFSB(int fsb, float *sdram, float *pci, float *agp)
+int slg8sp556_CheckFSB(int fsb, float *sdram, float *pci, float *agp)
 {
 	int i;
 
@@ -218,7 +224,7 @@ int slg8sp513_CheckFSB(int fsb, float *sdram, float *pci, float *agp)
 	return -1;
 }
 
-int slg8sp513_GetFirstFSB()
+int slg8sp556_GetFirstFSB()
 {
 	FSBIndex = 0;
 	if(pll[FSBIndex].fsb)
@@ -227,7 +233,7 @@ int slg8sp513_GetFirstFSB()
 		return -1;
 }
 
-int slg8sp513_GetNextFSB()
+int slg8sp556_GetNextFSB()
 {
 	FSBIndex++;
 	if(pll[FSBIndex].fsb)
