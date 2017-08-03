@@ -159,6 +159,8 @@ int slg8sp513_SetFSB(int fsb)
 	for(i=0; i<res; i++)
 		printf("%02X ", buf[i]);
 	printf("\n");
+	printf(slg8sp513_GetFSB());
+	printf("\n");
 #endif /* DEBUG */
 
 	return 0;
